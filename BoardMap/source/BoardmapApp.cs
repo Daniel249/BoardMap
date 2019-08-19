@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using System;
+// using System;
 // using Color = Microsoft.Xna.Framework.Color;
 
 namespace BoardMap
@@ -30,7 +30,7 @@ namespace BoardMap
         // top left corner
         Vector2 mapPosition;
         // bitmap array
-        Color[] mapData;
+        ColorData mapData;
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -63,8 +63,7 @@ namespace BoardMap
             // init bitmap to texture size
             // provincemap = new System.Drawing.Bitmap(@"Content\hoi4province.bmp");
             // get data from texture
-            mapData = new Color[onlyFrame.Width * onlyFrame.Height];
-            onlyFrame.GetData<Color>(mapData);
+            mapData = new ColorData(onlyFrame);
 
             // test 
             // testFrame = new Texture2D(GraphicsDevice, onlyFrame.Width, onlyFrame.Height);

@@ -13,3 +13,8 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin provinces.bmp
+/importer:TextureImporter
+/processor:PassThroughProcessor
+/build:provinces.bmp
+

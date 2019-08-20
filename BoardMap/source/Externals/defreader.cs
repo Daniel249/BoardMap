@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BoardMap.Externals
 {
     // file reader for definitions.csv
-    class DefReader : Reader
+    class DefReader //: Reader
     {
 
     }

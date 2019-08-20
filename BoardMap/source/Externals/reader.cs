@@ -8,5 +8,18 @@ namespace BoardMap.Externals
 {
     abstract class Reader
     {
+        // path to file
+        readonly string path;
+
+        // main method
+        protected abstract bool processFile();
+
+        // returns rows array
+        protected abstract string[] readFile();
+
+        public Reader(string _path)
+        {
+            path = _path;
+        }
     }
 }

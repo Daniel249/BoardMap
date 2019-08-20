@@ -259,5 +259,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/Properties/
+/BoardMap/Content/
 /BoardMap/Content/otherprovinces.bmp
 /BoardMap/Content/anotherprovinces.bmp

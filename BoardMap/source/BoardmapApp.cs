@@ -153,7 +153,7 @@ namespace BoardMap
             // calc string
             string strong = $" X: {Mouse.GetState().X.ToString()} \n Y: {Mouse.GetState().Y.ToString()}";
             // write mouse coords
-            spriteBatch.DrawString(onlyFont, strong, new Vector2(10, 10), Color.Black);
+            spriteBatch.DrawString(onlyFont, strong, new Vector2(15, 15), Color.Black);
 
 
 

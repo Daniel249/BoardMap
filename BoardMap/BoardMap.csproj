@@ -64,7 +64,6 @@
     <EmbeddedResource Include="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\x86\SDL2.dll">
       <Link>x86\SDL2.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -110,9 +109,28 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.manifest" />
+    <None Include="Content\bin\DesktopGL\Content\font.xnb" />
+    <None Include="Content\bin\DesktopGL\Content\provinces.xnb" />
+    <None Include="Content\bin\DesktopGL\font.xnb" />
+    <None Include="Content\bin\DesktopGL\provinces.xnb" />
+    <None Include="Content\definition.csv" />
+    <None Include="Content\font.spritefont" />
+    <None Include="Content\obj\DesktopGL\.mgcontent" />
+    <None Include="Content\obj\DesktopGL\Content\.mgcontent" />
+    <None Include="Content\obj\DesktopGL\Content\font.mgcontent" />
+    <None Include="Content\obj\DesktopGL\Content\provinces.mgcontent" />
+    <None Include="Content\obj\DesktopGL\font.mgcontent" />
+    <None Include="Content\obj\DesktopGL\provinces.mgcontent" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="source\Common\" />
+  </ItemGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\otherprovinces.bmp" />
+    <Content Include="Content\provinces.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

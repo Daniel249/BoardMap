@@ -22,6 +22,7 @@ namespace BoardMap
         {
             // check bounds
             if(pos_x < 0 || pos_x > Width || pos_y < 0 || pos_y > Height) {
+                return data[0];
                 throw new IndexOutOfRangeException("ColorData out of bounds");
             }
             // else return from coordinates

@@ -148,7 +148,14 @@ namespace BoardMap
             // draw background for log
             spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, logSize.X, logSize.Y), logColor);
             // draw current mouse hover color
-            spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, 10, 10), mapData.get(Mouse.GetState().X, Mouse.GetState().Y));
+            spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, 15, 15), mapData.get(Mouse.GetState().X - (int)mapPosition.X, Mouse.GetState().Y - (int)mapPosition.Y));
+
+            // calc string
+            string strong = $" X: {Mouse.GetState().X.ToString()} \n Y: {Mouse.GetState().Y.ToString()}";
+            // write mouse coords
+            spriteBatch.DrawString(onlyFont, strong, new Vector2(10, 10), Color.Black);
+
+
 
             // sprite end
             spriteBatch.End();

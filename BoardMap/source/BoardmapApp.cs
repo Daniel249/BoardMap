@@ -18,9 +18,12 @@ namespace BoardMap
         public BoardmapApp()
         {
             graphics = new GraphicsDeviceManager(this);
+
+            // set to fullscreen
             graphics.IsFullScreen = true;
             graphics.PreferredBackBufferWidth = 1920;
             graphics.PreferredBackBufferHeight = 1080;
+
             Content.RootDirectory = "Content"; 
         }
 
@@ -31,6 +34,11 @@ namespace BoardMap
         Vector2 mapPosition;
         // bitmap array
         ColorData mapData;
+
+        // font
+        SpriteFont onlyFont;
+        // font position
+        Vector2 logPosition;
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -57,13 +65,16 @@ namespace BoardMap
             
 
             mapPosition = new Vector2(0, 0);
-
             // load map as texture
             onlyFrame = Content.Load<Texture2D>("provinces");
             // init bitmap to texture size
             // provincemap = new System.Drawing.Bitmap(@"Content\hoi4province.bmp");
             // get data from texture
             mapData = new ColorData(onlyFrame);
+
+            logPosition = new Vector2(0, 0);
+            // load font
+            onlyFont = Content.Load<SpriteFont>("font");
 
             // test 
             // testFrame = new Texture2D(GraphicsDevice, onlyFrame.Width, onlyFrame.Height);

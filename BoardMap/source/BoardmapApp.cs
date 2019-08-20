@@ -37,8 +37,13 @@ namespace BoardMap
 
         // font
         SpriteFont onlyFont;
-        // font position
-        Vector2 logPosition;
+        // log position and size
+        Point logPosition;
+        Point logSize;
+        // log empty background
+        Texture2D whiteRectangle;
+        // log color
+        Color logColor;
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -49,7 +54,7 @@ namespace BoardMap
         protected override void Initialize()
         {
             this.IsMouseVisible = true;
-            Mouse.WindowHandle = Window.Handle;
+            //Mouse.WindowHandle = Window.Handle;
 
             base.Initialize();
         }
@@ -72,9 +77,16 @@ namespace BoardMap
             // get data from texture
             mapData = new ColorData(onlyFrame);
 
-            logPosition = new Vector2(0, 0);
+            // init log
+            logPosition = new Point(0, 0);
+            logSize = new Point(100, 100);
+            logColor = Color.White;
+            whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
+            whiteRectangle.SetData(new[] { Color.White });
+
             // load font
             onlyFont = Content.Load<SpriteFont>("font");
+            
 
             // test 
             // testFrame = new Texture2D(GraphicsDevice, onlyFrame.Width, onlyFrame.Height);
@@ -94,7 +106,9 @@ namespace BoardMap
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
             // move map
+            #region
             if (Keyboard.GetState().IsKeyDown(Keys.Left) || Mouse.GetState().X <= 0) {
                 if(mapPosition.X < 0) {
                     mapPosition.X += 20;
@@ -112,7 +126,10 @@ namespace BoardMap
                     mapPosition.Y -= 20;
                 }
             }
-                base.Update(gameTime);
+            #endregion
+
+
+            base.Update(gameTime);
         }
 
         /// <summary>
@@ -121,16 +138,20 @@ namespace BoardMap
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            
+            GraphicsDevice.Clear(Color.CornflowerBlue);          
             // sprite beginn
             spriteBatch.Begin();
 
+
+            // draw only frame
             spriteBatch.Draw(onlyFrame, mapPosition, Color.White);
+            // draw background for log
+            spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, logSize.X, logSize.Y), logColor);
+            // draw current mouse hover color
+            spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, 10, 10), mapData.get(Mouse.GetState().X, Mouse.GetState().Y));
 
-            spriteBatch.End();
             // sprite end
-
+            spriteBatch.End();
             base.Draw(gameTime);
         }    
 
@@ -139,6 +160,11 @@ namespace BoardMap
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
         /// </summary>
-        protected override void UnloadContent() { }
+        protected override void UnloadContent() {
+            base.UnloadContent();
+            spriteBatch.Dispose();
+
+            whiteRectangle.Dispose();
+        }
     }
 }

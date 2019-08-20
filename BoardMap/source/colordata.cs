@@ -46,6 +46,8 @@ namespace BoardMap
         {
             // loads data from texture
             setData(texture);
+            Height = texture.Height;
+            Width = texture.Width;
             
         }
     }

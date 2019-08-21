@@ -44,6 +44,9 @@ namespace BoardMap
         Texture2D whiteRectangle;
         // log color
         Color logColor;
+        // after image is to the left or not
+        bool afterImageLeft;
+
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -54,7 +57,7 @@ namespace BoardMap
         protected override void Initialize()
         {
             this.IsMouseVisible = true;
-            //Mouse.WindowHandle = Window.Handle;
+            Mouse.WindowHandle = Window.Handle;
 
             base.Initialize();
         }
@@ -87,7 +90,6 @@ namespace BoardMap
             // load font
             onlyFont = Content.Load<SpriteFont>("font");
             
-
             // test 
             // testFrame = new Texture2D(GraphicsDevice, onlyFrame.Width, onlyFrame.Height);
             // testFrame.SetData<Color>(mapData);
@@ -112,17 +114,25 @@ namespace BoardMap
             if (Keyboard.GetState().IsKeyDown(Keys.Left) || Mouse.GetState().X <= 0) {
                 if(mapPosition.X < 0) {
                     mapPosition.X += 20;
-                } 
+                } else {
+                    // if out of bound to the left -> teleport to the left and spawn after image to the right
+                    mapPosition.X -= onlyFrame.Width;
+                    afterImageLeft = false;
+                }
             } else if (Keyboard.GetState().IsKeyDown(Keys.Right) || Mouse.GetState().X >= GraphicsDevice.PresentationParameters.BackBufferWidth - 10) {
-                if (onlyFrame.Width + mapPosition.X > GraphicsDevice.PresentationParameters.BackBufferWidth) {
+                if (mapPosition.X + onlyFrame.Width > GraphicsDevice.PresentationParameters.BackBufferWidth) {
                     mapPosition.X -= 20;
+                } else {
+                    // if out of bound to the right -> teleport to the right and spawn after image to the left
+                    mapPosition.X += onlyFrame.Width;
+                    afterImageLeft = true;
                 }
             } else if (Keyboard.GetState().IsKeyDown(Keys.Up) || Mouse.GetState().Y <= 0) {
                 if (mapPosition.Y < 0) {
                     mapPosition.Y += 20;
                 }
             } else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Mouse.GetState().Y >= GraphicsDevice.PresentationParameters.BackBufferHeight - 10) {
-                if (onlyFrame.Height + mapPosition.Y > GraphicsDevice.PresentationParameters.BackBufferHeight) {
+                if (mapPosition.Y + onlyFrame.Height > GraphicsDevice.PresentationParameters.BackBufferHeight) {
                     mapPosition.Y -= 20;
                 }
             }
@@ -138,6 +148,7 @@ namespace BoardMap
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+
             GraphicsDevice.Clear(Color.CornflowerBlue);          
             // sprite beginn
             spriteBatch.Begin();
@@ -145,6 +156,12 @@ namespace BoardMap
 
             // draw only frame
             spriteBatch.Draw(onlyFrame, mapPosition, Color.White);
+            // draw after image 
+            if(afterImageLeft) {
+                spriteBatch.Draw(onlyFrame, new Vector2(mapPosition.X - onlyFrame.Width, mapPosition.Y), Color.White);
+            } else {
+                spriteBatch.Draw(onlyFrame, new Vector2(mapPosition.X + onlyFrame.Width, mapPosition.Y), Color.White);
+            }
             // draw background for log
             spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, logSize.X, logSize.Y), logColor);
             // draw current mouse hover color

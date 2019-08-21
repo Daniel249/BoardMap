@@ -27,25 +27,29 @@ namespace BoardMap
             Content.RootDirectory = "Content"; 
         }
 
-        // System.Drawing.Bitmap provincemap;
-        // only image being printed each frame
+
+        // printed each frame
         Texture2D onlyFrame;
-        // top left corner
-        Vector2 mapPosition;
-        // bitmap array
+        // top left corner of frame texture
+        Vector2 framePosition;
+        // bitmap color array
         ColorData mapData;
 
         // font
         SpriteFont onlyFont;
+
+        // log empty background. 1 pixel texture
+        Texture2D whiteRectangle;
+
+        // after image is to the left or not
+        bool afterImageLeft;
+
         // log position and size
         Point logPosition;
         Point logSize;
-        // log empty background
-        Texture2D whiteRectangle;
         // log color
         Color logColor;
-        // after image is to the left or not
-        bool afterImageLeft;
+
 
 
         /// <summary>
@@ -72,7 +76,7 @@ namespace BoardMap
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
 
-            mapPosition = new Vector2(0, 0);
+            framePosition = new Vector2(0, 0);
             // load map as texture
             onlyFrame = Content.Load<Texture2D>("provinces");
             // init bitmap to texture size
@@ -112,28 +116,28 @@ namespace BoardMap
             // move map
             #region
             if (Keyboard.GetState().IsKeyDown(Keys.Left) || Mouse.GetState().X <= 0) {
-                if(mapPosition.X < 0) {
-                    mapPosition.X += 20;
+                if(framePosition.X < 0) {
+                    framePosition.X += 20;
                 } else {
                     // if out of bound to the left -> teleport to the left and spawn after image to the right
-                    mapPosition.X -= onlyFrame.Width;
+                    framePosition.X -= onlyFrame.Width;
                     afterImageLeft = false;
                 }
             } else if (Keyboard.GetState().IsKeyDown(Keys.Right) || Mouse.GetState().X >= GraphicsDevice.PresentationParameters.BackBufferWidth - 10) {
-                if (mapPosition.X + onlyFrame.Width > GraphicsDevice.PresentationParameters.BackBufferWidth) {
-                    mapPosition.X -= 20;
+                if (framePosition.X + onlyFrame.Width > GraphicsDevice.PresentationParameters.BackBufferWidth) {
+                    framePosition.X -= 20;
                 } else {
                     // if out of bound to the right -> teleport to the right and spawn after image to the left
-                    mapPosition.X += onlyFrame.Width;
+                    framePosition.X += onlyFrame.Width;
                     afterImageLeft = true;
                 }
             } else if (Keyboard.GetState().IsKeyDown(Keys.Up) || Mouse.GetState().Y <= 0) {
-                if (mapPosition.Y < 0) {
-                    mapPosition.Y += 20;
+                if (framePosition.Y < 0) {
+                    framePosition.Y += 20;
                 }
             } else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Mouse.GetState().Y >= GraphicsDevice.PresentationParameters.BackBufferHeight - 10) {
-                if (mapPosition.Y + onlyFrame.Height > GraphicsDevice.PresentationParameters.BackBufferHeight) {
-                    mapPosition.Y -= 20;
+                if (framePosition.Y + onlyFrame.Height > GraphicsDevice.PresentationParameters.BackBufferHeight) {
+                    framePosition.Y -= 20;
                 }
             }
             #endregion
@@ -155,17 +159,17 @@ namespace BoardMap
 
 
             // draw only frame
-            spriteBatch.Draw(onlyFrame, mapPosition, Color.White);
+            spriteBatch.Draw(onlyFrame, framePosition, Color.White);
             // draw after image 
             if(afterImageLeft) {
-                spriteBatch.Draw(onlyFrame, new Vector2(mapPosition.X - onlyFrame.Width, mapPosition.Y), Color.White);
+                spriteBatch.Draw(onlyFrame, new Vector2(framePosition.X - onlyFrame.Width, framePosition.Y), Color.White);
             } else {
-                spriteBatch.Draw(onlyFrame, new Vector2(mapPosition.X + onlyFrame.Width, mapPosition.Y), Color.White);
+                spriteBatch.Draw(onlyFrame, new Vector2(framePosition.X + onlyFrame.Width, framePosition.Y), Color.White);
             }
             // draw background for log
             spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, logSize.X, logSize.Y), logColor);
             // draw current mouse hover color
-            spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, 15, 15), mapData.get(Mouse.GetState().X - (int)mapPosition.X, Mouse.GetState().Y - (int)mapPosition.Y));
+            spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, 15, 15), mapData.get(Mouse.GetState().X - (int)framePosition.X, Mouse.GetState().Y - (int)framePosition.Y));
 
             // calc string
             string strong = $" X: {Mouse.GetState().X.ToString()} \n Y: {Mouse.GetState().Y.ToString()}";

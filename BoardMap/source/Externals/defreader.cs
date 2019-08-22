@@ -9,6 +9,16 @@ namespace BoardMap.Externals
     // file reader for definitions.csv
     class DefReader : Reader
     {
+        protected override bool processFile() {
+            throw new NotImplementedException();
+        }
 
+        protected override string[] readFile() {
+            throw new NotImplementedException();
+        }
+
+        public DefReader(string _path) : base(_path) {
+
+        }
     }
 }

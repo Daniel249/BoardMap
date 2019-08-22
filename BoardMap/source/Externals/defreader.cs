@@ -6,19 +6,9 @@ using System.Threading.Tasks;
 
 namespace BoardMap.Externals
 {
-// file reader for definitions.csv
-class DefReader : Reader
-{
-    protected override bool processFile()
+    // file reader for definitions.csv
+    class DefReader //: Reader
     {
-        throw new NotImplementedException();
+
     }
-
-    protected override string[] readFile()
-    {
-        throw new NotImplementedException();
-    }
-
-
-}
 }

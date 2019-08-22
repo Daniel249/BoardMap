@@ -38,7 +38,7 @@ namespace BoardMap
         // font
         SpriteFont onlyFont;
 
-        // log empty background. 1 pixel texture
+        // 1 pixel texture. for: log empty background. 
         Texture2D whiteRectangle;
 
         // after image is to the left or not
@@ -79,8 +79,6 @@ namespace BoardMap
             framePosition = new Vector2(0, 0);
             // load map as texture
             onlyFrame = Content.Load<Texture2D>("provinces");
-            // init bitmap to texture size
-            // provincemap = new System.Drawing.Bitmap(@"Content\hoi4province.bmp");
             // get data from texture
             mapData = new ColorData(onlyFrame);
 
@@ -93,11 +91,6 @@ namespace BoardMap
 
             // load font
             onlyFont = Content.Load<SpriteFont>("font");
-            
-            // test 
-            // testFrame = new Texture2D(GraphicsDevice, onlyFrame.Width, onlyFrame.Height);
-            // testFrame.SetData<Color>(mapData);
-            // testFrame = new Texture2D(GraphicsDevice, onlyFrame.Width, onlyFrame.Height);
         }
 
 

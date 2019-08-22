@@ -90,26 +90,14 @@ namespace BoardMap
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime) {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
+            || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
                 Exit();
+            }
 
             // move map
-            #region
-            if (Keyboard.GetState().IsKeyDown(Keys.Left) || Mouse.GetState().X <= 0) {
-                frame.shiftMap(20, 0);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Right)
-            || Mouse.GetState().X >= GraphicsDevice.PresentationParameters.BackBufferWidth - 10) {
-                frame.shiftMap(-20, 0);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Up) || Mouse.GetState().Y <= 0) {
-                frame.shiftMap(0, 20);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down)
-            || Mouse.GetState().Y >= GraphicsDevice.PresentationParameters.BackBufferHeight - 10) {
-                frame.shiftMap(0, -20);
-            }
-            #endregion
+            frame.shiftMap(GraphicsDevice.PresentationParameters.BackBufferWidth, 
+                           GraphicsDevice.PresentationParameters.BackBufferHeight);
 
                         
 

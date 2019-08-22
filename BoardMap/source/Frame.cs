@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,12 +27,13 @@ namespace BoardMap.Graphics
         int BBHeight;
         // SpriteBatch spriteBatch;
 
-        // at default zoom moves 1 value to 1 pixel
-        public void shiftMap(int shift_x, int shift_y) {
+        // get window size and move frame relative to the screen
+        public void shiftMap(int width, int height) {
 
-            if (shift_x > 0) {
+            if (Keyboard.GetState().IsKeyDown(Keys.Left) || Mouse.GetState().X <= 0) {
                 if (Position.X < 0) {
-                    Position.X += shift_x;
+                    // if can move
+                    Position.X += 20;
                 }
                 else {
                     // if out of bound to the left -> teleport to the left and spawn after image to the right
@@ -39,26 +41,25 @@ namespace BoardMap.Graphics
                     afterImageLeft = false;
                 }
             }
-            if(shift_x < 0) { 
-                if (Position.X + mapTexture.Width > BBWidth) {
-                    Position.X += shift_x;
+            else if (Keyboard.GetState().IsKeyDown(Keys.Right) || Mouse.GetState().X >= width - 10) {
+                if (Position.X + mapTexture.Width > width) {
+                    // if can move
+                    Position.X -= 20;
                 }
                 else {
-                    // if out of bound to the right -> teleport to the right and spawn after image to the left
+                    // if out of bound to the right -> teleport to the right and spawn afterimage to the left
                     Position.X += mapTexture.Width;
                     afterImageLeft = true;
                 }
             }
-
-            if(shift_y > 0) {
-                // up
+            if (Keyboard.GetState().IsKeyDown(Keys.Up) || Mouse.GetState().Y <= 0) {
                 if (Position.Y < 0) {
-                    Position.Y += shift_y;
+                    Position.Y += 20;
                 }
             }
-            if (shift_y < 0) {
-                if (Position.Y + mapTexture.Height > BBHeight) {
-                    Position.Y += shift_y;
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Mouse.GetState().Y >= height - 10) {
+                if (Position.Y + mapTexture.Height > height) {
+                    Position.Y -= 20;
                 }
             }
         }

@@ -15,12 +15,14 @@ namespace BoardMap
         SpriteBatch spriteBatch;
 
         public BoardmapApp() {
-            graphics = new GraphicsDeviceManager(this);
-
-            // set to fullscreen
-            graphics.IsFullScreen = true;
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            // init graphics
+            graphics = new GraphicsDeviceManager(this)
+            {
+                // then set to fullscreen
+                IsFullScreen = true,
+                PreferredBackBufferWidth = 1920,
+                PreferredBackBufferHeight = 1080
+            };
 
             Content.RootDirectory = "Content";
         }
@@ -34,8 +36,6 @@ namespace BoardMap
         // 1 pixel texture. for: log empty background. 
         Texture2D whiteRectangle;
 
-        // after image is to the left or not
-        bool afterImageLeft;
 
         // log position and size
         Point logPosition;
@@ -70,7 +70,7 @@ namespace BoardMap
             Vector2 framePosition = new Vector2(0, 0);
             // load map as texture
             Texture2D onlyFrame = Content.Load<Texture2D>("provinces");
-            frame = new Frame(onlyFrame, framePosition, spriteBatch, GraphicsDevice.PresentationParameters.BackBufferHeight, GraphicsDevice.PresentationParameters.BackBufferWidth);
+            frame = new Frame(onlyFrame, framePosition, spriteBatch);
 
 
             // init log
@@ -90,17 +90,18 @@ namespace BoardMap
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime) {
+            // esc -> exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
             || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
                 Exit();
             }
+
 
             // move map
             frame.shiftMap(GraphicsDevice.PresentationParameters.BackBufferWidth, 
                            GraphicsDevice.PresentationParameters.BackBufferHeight);
 
                         
-
             base.Update(gameTime);
         }
 

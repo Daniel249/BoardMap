@@ -43,9 +43,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="source\BoardmapApp.cs" />
+    <Compile Include="source\Graphics\colordata.cs" />
     <Compile Include="source\Landscape\continent.cs" />
     <Compile Include="source\Landscape\country.cs" />
-    <Compile Include="source\frame.cs" />
+    <Compile Include="source\Graphics\frame.cs" />
+    <Compile Include="source\Landscape\landscape.cs" />
+    <Compile Include="source\Landscape\polis.cs" />
     <Compile Include="source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="source\Externals\defreader.cs" />

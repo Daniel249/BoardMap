@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardMap.Landscape
+namespace BoardMap.LandscapeNS
 {
     //
     class State
@@ -16,15 +16,16 @@ namespace BoardMap.Landscape
         public string Name { get; private set; }
         // state color
         public Color color { get; private set; }
-        
 
+        // population size
+        public int population { get; private set; }
 
         // references to tiles
         Tile[] tiles;
         // reference to country
         Country country;
         // cities in state
-        // tiles array doesnt contain cities !!
+        //Polis[]
 
     }
 }

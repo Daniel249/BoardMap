@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardMap.source
+namespace BoardMap.Landscape
 {
     // properties loaded from definitions.csv
     class Tile
@@ -19,6 +19,9 @@ namespace BoardMap.source
         // is coastal
         public bool isCoastal { get; private set; }
 
+
+        // reference to state
+        State state;
 
 
 

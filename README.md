@@ -1,4 +1,4 @@
 # BoardMap
 BoardMap for strategy game 
 
-TODO interface with id name and color
+prob. interface with id name and color

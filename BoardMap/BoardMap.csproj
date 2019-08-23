@@ -43,12 +43,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="source\BoardmapApp.cs" />
+    <Compile Include="source\Landscape\continent.cs" />
+    <Compile Include="source\Landscape\country.cs" />
     <Compile Include="source\frame.cs" />
     <Compile Include="source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="source\Externals\defreader.cs" />
     <Compile Include="source\Externals\reader.cs" />
-    <Compile Include="source\tile.cs" />
+    <Compile Include="source\Landscape\state.cs" />
+    <Compile Include="source\Landscape\tile.cs" />
     <Compile Include="source\tiletexture.cs" />
   </ItemGroup>
   <ItemGroup>

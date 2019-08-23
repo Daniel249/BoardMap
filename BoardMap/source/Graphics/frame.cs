@@ -18,7 +18,9 @@ namespace BoardMap.Graphics
         // texture printed eachFrame
         Texture2D mapTexture;
         // color data in array form
-        Color[] colorData;
+        // Color[] colorData;
+        // <color> data
+        ColorData<Color> colorData;
 
         // after image is to the left or not
         bool afterImageLeft;
@@ -38,21 +40,22 @@ namespace BoardMap.Graphics
         }
 
         // get Color from coord in colordata
-        public Color getColorData(int pos_x, int pos_y) {
+        public Color getColorFrom(int pos_x, int pos_y) {
             // correct from afterimage to actual frame
-            pos_x = (pos_x + mapTexture.Width) % mapTexture.Width;
+            pos_x = (pos_x + colorData.Width) % colorData.Width;
 
-            // check out of bounds
+            // check out of bounds 
+            /*
             if (pos_y < 0 || pos_y >= mapTexture.Height) {
                 return colorData[0];
                 throw new IndexOutOfRangeException("ColorData out of bounds");
-            }
-            return colorData[pos_x + pos_y * mapTexture.Width];
+            } */
+            return colorData.get(pos_x, pos_y);
         }
 
         // copy colordata to texture
-        public void getColorData(Texture2D blankTexture) {
-            blankTexture.SetData<Color>(colorData);
+        public void getAllData(Texture2D blankTexture) {
+            blankTexture.SetData<Color>(colorData.Data);
         }
 
 
@@ -104,8 +107,10 @@ namespace BoardMap.Graphics
             mapTexture = _texture;
 
             // init color[] data from texture
-            colorData = new Color[_texture.Width * _texture.Height];
-            _texture.GetData<Color>(colorData);
+            Color[] _colorData = new Color[_texture.Width * _texture.Height];
+            // then save it to colordata and texture
+            colorData = new ColorData<Color>(_colorData, _texture.Width, _texture.Height);
+            _texture.GetData<Color>(_colorData);
         }
     }
 }

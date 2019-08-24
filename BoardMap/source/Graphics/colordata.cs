@@ -13,7 +13,8 @@ namespace BoardMap.Graphics
     class ColorData<T>
     {
         // the data iteself
-        public T[] Data { get; private set; }
+        T[] data;
+        public T[] Data { get { return data; } }
         // size	
         public int Height { get; private set; }
         public int Width { get; private set; }
@@ -37,7 +38,7 @@ namespace BoardMap.Graphics
                 throw new IndexOutOfRangeException("ColorData out of bounds");
             }
             // else set
-            Data[pos_x + pos_y * Width] = toSet;
+            data[pos_x + pos_y * Width] = toSet;
             return true;
         }
 
@@ -50,7 +51,7 @@ namespace BoardMap.Graphics
 
         // constructor	
         public ColorData(T[] _data, int _width, int _height) {
-            Data = _data;
+            data = _data;
             Height = _height;
             Width = _width;
         }

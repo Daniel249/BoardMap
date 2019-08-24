@@ -21,14 +21,15 @@ namespace BoardMap.Externals
         public Dictionary<Color, ColorData<bool>> processData(int range) {
             Dictionary<Color, ColorData<bool>> dict = new Dictionary<Color, ColorData<bool>>();
 
-            // search for a tile's pixel
+            // loop through pixels left right and up down
             for (int pos_y = 0; pos_y < colorData.Height; pos_y++) {
                 for (int pos_x = 0; pos_x < colorData.Width; pos_x++) {
                     // get color
                     Color color = colorData.get(pos_x, pos_y);
                     // if not black -> tile of that color still not processed
                     if (color != Color.Black) {
-                        dict.Add(color, scanRange(pos_x, pos_y, range));
+                        ColorData<bool> tile = scanRange(ref pos_x, ref pos_y, range);
+                        dict.Add(color, tile);
                     }
 
                 }
@@ -36,8 +37,8 @@ namespace BoardMap.Externals
             return dict;
         }
 
-        // search range pixel to every side for the color in that position
-        ColorData<bool> scanRange(int pos_x, int pos_y, int range) {
+        // search pixels in range to every side and downwards for the color in that position
+        ColorData<bool> scanRange(ref int pos_x, ref int pos_y, int range) {
             // init black and white datacolor to return
             ColorData<bool> toReturn = new ColorData<bool>(new bool[2 * range * range], 2 * range, range);
             // get color from starting pixel
@@ -51,7 +52,7 @@ namespace BoardMap.Externals
             // set black and white overkill image
             for (int count_y = 0; count_y < range; count_y++) {
                 for (int count_x = 0; count_x < 2*range; count_x++) {
-                    // if match
+                    // if match, delete pixel and draw on return
                     if (colorData.get(pos_x + count_x, pos_y + count_y) == searchColor) {
                         colorData.set(pos_x + count_x, pos_y + count_y, Color.Black);
                         toReturn.set(count_x, count_y, true);
@@ -68,19 +69,19 @@ namespace BoardMap.Externals
             // init all sides' offset to move
             int up = toCut.Height;
             int left = toCut.Width;
-            int right = -1;
-            int down = -1;
+            int right = 0;
+            int down = 0;
 
             // run from left to right and up down
             for (int count_y = 0; count_y < toCut.Height; count_y++) {
                 for (int count_x = 0; count_x < toCut.Width; count_x++) {
-                    // if match
+                    // if find
                     if (toCut.get(count_x, count_y) == true) {
                         // expected to always set once to 0
                         if(up > count_y) {
                             up = count_y;
                         }
-                        // set left to minimun distance from left frame
+                        // minimun distance from left frame
                         if(left > count_x) {
                             left = count_x;
                         }
@@ -90,36 +91,37 @@ namespace BoardMap.Externals
             // run from right to left and down up
             for (int count_y = toCut.Height - 1; count_y >= 0; count_y--) {
                 for (int count_x = toCut.Width - 1; count_x >= 0; count_x--) {
-                    // if match
+                    // if find
                     if (toCut.get(count_x, count_y) == true) {
-                        // expected to always set once to 0
+                        // minimum distance from bottom frame
                         if (down < count_y) {
                             down = count_y;
                         }
-                        // set left to minimun distance from left frame
+                        // minimum distance from right frame
                         if (right < count_x) {
                             right = count_x;
                         }
                     }
                 }
             }
-            // init empty newReturn data
-            ColorData<bool> newReturn = new ColorData<bool>(new bool[(right - left) * (down - up)], 
+            // init colordata to return with empty array of cut size
+            ColorData<bool> toReturn = new ColorData<bool>(new bool[(right - left) * (down - up)], 
                 (right - left), (down - up));
 
-            // load newReturn with data from toCut
-            for (int count_y = 0; count_y < newReturn.Height; count_y++) {
-                for (int count_x = 0; count_x < newReturn.Width; count_x++) {
-                    // print to newReturn with up and left as offset
+            // load toReturn with data from toCut
+            for (int count_y = 0; count_y < toReturn.Height; count_y++) {
+                for (int count_x = 0; count_x < toReturn.Width; count_x++) {
+                    // get color
                     bool toPrint = toCut.get(count_x + left, count_y + up);
-                    newReturn.set(count_x, count_y, toPrint);
+                    // draw color
+                    toReturn.set(count_x, count_y, toPrint);
                 }
             }
 
             // update position relative to frame and return
             pos_x += left;
             pos_y += up;
-            return newReturn;
+            return toReturn;
         }
 
         // constructor from texture

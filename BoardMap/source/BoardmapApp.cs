@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using BoardMap.Graphics;
+using BoardMap.Common;
 
 namespace BoardMap
 {
@@ -43,6 +44,9 @@ namespace BoardMap
         // log color
         Color logColor;
 
+        // fps counter
+        Framerate fpsCounter;
+
 
 
         /// <summary>
@@ -82,6 +86,9 @@ namespace BoardMap
 
             // load font
             onlyFont = Content.Load<SpriteFont>("font");
+
+            // init frps counter
+            fpsCounter = new Framerate(5);
         }
 
         /// <summary>
@@ -134,6 +141,11 @@ namespace BoardMap
             // write mouse coords
             spriteBatch.DrawString(onlyFont, strong, new Vector2(15, 15), Color.Black);
 
+
+
+            // draw fpsCounter
+            fpsCounter.Update(gameTime.ElapsedGameTime.TotalSeconds);
+            spriteBatch.DrawString(onlyFont, fpsCounter.framerate.ToString("F"), new Vector2(1920 - 50, 15), Color.Black);
 
 
             // sprite end

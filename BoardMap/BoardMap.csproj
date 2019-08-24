@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="source\BoardmapApp.cs" />
+    <Compile Include="source\Common\framerate.cs" />
     <Compile Include="source\Graphics\colordata.cs" />
     <Compile Include="source\Landscape\continent.cs" />
     <Compile Include="source\Landscape\country.cs" />
@@ -128,9 +129,7 @@
     <None Include="Content\obj\DesktopGL\font.mgcontent" />
     <None Include="Content\obj\DesktopGL\provinces.mgcontent" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="source\Common\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>

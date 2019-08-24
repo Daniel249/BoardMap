@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +13,8 @@ namespace BoardMap.LandscapeNS
 
         // population size
         public int population { get; private set; }
-
+        // reference to its tile
+        public Tile tile { get; private set; }
 
     }
 }

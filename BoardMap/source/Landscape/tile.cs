@@ -29,14 +29,14 @@ namespace BoardMap.LandscapeNS
         // reference to state
         State state;
         // reference to city | null if not a city
-        Polis city;
+        // Polis city;
 
         // if 
         public void addTexture(bool[] _texture) {
             if(textures.Any()) {
                 textures.Add(_texture);
             } else {
-                // list wasnt created with a texture
+                // tile was created without a texture
                 throw new NotSupportedException("tile created without texture");
             }
         }

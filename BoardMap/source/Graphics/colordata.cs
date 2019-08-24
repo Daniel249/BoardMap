@@ -29,6 +29,18 @@ namespace BoardMap.Graphics
             return Data[pos_x + pos_y * Width];
         }
 
+        // set Color in coordinates
+        public bool set(int pos_x, int pos_y, T toSet) {
+            // check bounds	
+            if (pos_x < 0 || pos_x >= Width || pos_y < 0 || pos_y >= Height) {
+                return false;
+                throw new IndexOutOfRangeException("ColorData out of bounds");
+            }
+            // else set
+            Data[pos_x + pos_y * Width] = toSet;
+            return true;
+        }
+
         // set data array	
         public void setData(Texture2D texture) {
             //data = new Color[texture.Width * texture.Height];
@@ -41,7 +53,6 @@ namespace BoardMap.Graphics
             Data = _data;
             Height = _height;
             Width = _width;
-
         }
     }
 }

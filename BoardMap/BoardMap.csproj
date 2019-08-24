@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="source\BoardmapApp.cs" />
     <Compile Include="source\Common\framerate.cs" />
+    <Compile Include="source\Externals\loader.cs" />
     <Compile Include="source\Graphics\colordata.cs" />
     <Compile Include="source\Landscape\continent.cs" />
     <Compile Include="source\Landscape\country.cs" />

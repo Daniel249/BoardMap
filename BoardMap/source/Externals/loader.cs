@@ -1,6 +1,7 @@
 ﻿using BoardMap.Graphics;
 using BoardMap.LandscapeNS;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,12 @@ namespace BoardMap.Externals
         ColorData<Color> colorData;
 
         // main method
+        // process whole frame's colordata and get dictionary from color to colordata
+        // evtl init tiles with those colordatas
         public Dictionary<Color, ColorData<bool>> processData(int range) {
             Dictionary<Color, ColorData<bool>> dict = new Dictionary<Color, ColorData<bool>>();
 
+            // search for a tile's pixel
             for (int pos_y = 0; pos_y < colorData.Height; pos_y++) {
                 for (int pos_x = 0; pos_x < colorData.Width; pos_x++) {
                     // get color
@@ -32,6 +36,7 @@ namespace BoardMap.Externals
             return dict;
         }
 
+        // search range pixel to every side for the color in that position
         ColorData<bool> scanRange(int pos_x, int pos_y, int range) {
             // init black and white datacolor to return
             ColorData<bool> toReturn = new ColorData<bool>(new bool[2 * range * range], 2 * range, range);
@@ -57,7 +62,8 @@ namespace BoardMap.Externals
             return cutData(ref pos_x, ref pos_y, toReturn);
         }
 
-        // cut toReturn color data from scanRange() to lowest possible size
+        // cut toReturn color data from scanRange() to lowest possible size 
+        // and change position relative to frame accordingly
         ColorData<bool> cutData(ref int pos_x, ref int pos_y, ColorData<bool> toCut) {
             // init all sides' offset to move
             int up = toCut.Height;
@@ -97,7 +103,7 @@ namespace BoardMap.Externals
                     }
                 }
             }
-            // init neeReturn data
+            // init empty newReturn data
             ColorData<bool> newReturn = new ColorData<bool>(new bool[(right - left) * (down - up)], 
                 (right - left), (down - up));
 
@@ -107,7 +113,6 @@ namespace BoardMap.Externals
                     // print to newReturn with up and left as offset
                     bool toPrint = toCut.get(count_x + left, count_y + up);
                     newReturn.set(count_x, count_y, toPrint);
-
                 }
             }
 
@@ -117,8 +122,11 @@ namespace BoardMap.Externals
             return newReturn;
         }
 
-        public TileLoader(ColorData<Color> _colorData) {
-            colorData = _colorData;
+        // constructor from texture
+        public TileLoader(Texture2D _texture) {
+            Color[] _colorData = new Color[_texture.Width * _texture.Height];
+            _texture.GetData<Color>(_colorData);
+            colorData = new ColorData<Color>(_colorData, _texture.Width, _texture.Height);
         }
     }
 }

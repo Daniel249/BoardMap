@@ -15,8 +15,8 @@ namespace BoardMap.Externals
         // path 
         string path;
 
-
-        // return tiles
+        // main method
+        // return tiles ordered in array
         public Tile[] processFile(Dictionary<Color, Tile> tiles) {
             List<string[]> split = new List<string[]>();
 

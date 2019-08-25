@@ -37,7 +37,35 @@ namespace BoardMap.LandscapeNS
         // reference to city | null if not a city
         // Polis city;
 
-        // if 
+
+        // static reference to frame
+        public static Frame frameReference;
+
+        // draw tile to frame
+        public void drawTile() {
+            drawTile(color);
+        }
+        // overload with color
+        public void drawTile(Color _color) {
+            // loop textures and positions
+            for (int count = 0; count < textures.Count; count++) {
+                ColorData<bool> currentTexture = textures[count];
+                // loop rows
+                for (int rel_y = 0; rel_y < currentTexture.Height; rel_y++) {
+                    // loop in row
+                    for(int rel_x = 0; rel_x < currentTexture.Width; rel_x++) {
+                        // get black and white pixel and draw color if true/black
+                        if (currentTexture.get(rel_x, rel_y)) {
+                            frameReference.setColorFrom(
+                                positions[count].X + rel_x, positions[count].Y + rel_y, _color);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        // 
         public void addTexture(Point _point, ColorData<bool> _texture) {
             if(textures.Any()) {
                 textures.Add(_texture);
@@ -65,6 +93,11 @@ namespace BoardMap.LandscapeNS
             isLand = _isLand;
             isCoastal = _isCoastal;
             continent = _continent;
+        }
+
+        // set frame reference
+        public static void setFrame(Frame _frame) {
+            frameReference = _frame;
         }
 
     }

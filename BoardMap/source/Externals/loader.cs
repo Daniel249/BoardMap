@@ -48,7 +48,6 @@ namespace BoardMap.Externals
                             tile.addTexture(new Point(pos_x, pos_y), _tile);
                         }
                     }
-
                 }
             }
             return dictionary;

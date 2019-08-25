@@ -12,12 +12,19 @@ namespace BoardMap.LandscapeNS
     class Continent
     {
         // continent id
-        public int countryID { get; private set; }
+        public int ID { get; private set; }
         // continent name
         public string Name { get; private set; }
         // continent color
         public Color color { get; private set; }
 
         State[] states;
+
+        public Continent(int _id, string _name, Color _color) {
+            states = new State[0];
+            ID = _id;
+            Name = _name;
+            color = _color;
+        }
     }
 }

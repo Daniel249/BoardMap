@@ -31,10 +31,14 @@ namespace BoardMap.Graphics
             // draw after image 
             if (afterImageLeft) {
                 spriteBatch.Draw(mapTexture, new Vector2(Position.X - mapTexture.Width, Position.Y), Color.White);
-            }
-            else {
+            } else {
                 spriteBatch.Draw(mapTexture, new Vector2(Position.X + mapTexture.Width, Position.Y), Color.White);
             }
+        }
+
+        // set color from coord in colordata
+        public void setColorFrom(int pos_x, int pos_y, Color _color) {
+            colorData.set(pos_x, pos_y, _color);
         }
 
         // get Color from coord in colordata
@@ -43,6 +47,11 @@ namespace BoardMap.Graphics
             pos_x = (pos_x + colorData.Width) % colorData.Width;
 
             return colorData.get(pos_x, pos_y);
+        }
+
+        // update mapTexture with colorData
+        public void updateTexture() {
+            mapTexture.SetData<Color>(colorData.Data);
         }
 
         // copy colordata to texture
@@ -56,6 +65,8 @@ namespace BoardMap.Graphics
         // reads static mouse and keyboard
         public void shiftMap(int width, int height) {
 
+            int cameraSpeed = 10;
+
             // check left or right, and up or down
             
             // left right movement also controls afterimage location
@@ -64,7 +75,7 @@ namespace BoardMap.Graphics
             if (Keyboard.GetState().IsKeyDown(Keys.Left) || Mouse.GetState().X <= 0) {                      // check left
                 if (Position.X < 0) {
                     // if can move
-                    Position.X += 20;
+                    Position.X += cameraSpeed;
                 } else {
                     // if out of bound to the left -> teleport to the left and spawn after image to the right
                     Position.X -= mapTexture.Width;
@@ -73,7 +84,7 @@ namespace BoardMap.Graphics
             } else if (Keyboard.GetState().IsKeyDown(Keys.Right) || Mouse.GetState().X >= width - 10) {     // check right
                 if (Position.X + mapTexture.Width > width) {
                     // if can move
-                    Position.X -= 20;
+                    Position.X -= cameraSpeed;
                 } else {
                     // if out of bound to the right -> teleport to the right and spawn afterimage to the left
                     Position.X += mapTexture.Width;
@@ -82,11 +93,11 @@ namespace BoardMap.Graphics
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Up) || Mouse.GetState().Y <= 0) {                        // check up
                 if (Position.Y < 0) {
-                    Position.Y += 20;
+                    Position.Y += cameraSpeed;
                 }
             } else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Mouse.GetState().Y >= height - 10) {     // check down
                 if (Position.Y + mapTexture.Height > height) {
-                    Position.Y -= 20;
+                    Position.Y -= cameraSpeed;
                 }
             }
             

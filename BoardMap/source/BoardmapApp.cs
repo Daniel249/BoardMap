@@ -35,6 +35,7 @@ namespace BoardMap
         // landscape containing counries states and tiles
         Landscape landscape;
 
+        KeyboardState lastKeyboard;
 
          
         // font - rectangle - log - fps
@@ -91,16 +92,19 @@ namespace BoardMap
             // init frps counter
             fpsCounter = new Framerate(5);
 
-
+            // init keyboard state stored for comparison
+            lastKeyboard = Keyboard.GetState();
 
             // init Frame
             Vector2 framePosition = new Vector2(0, 0);
             // load map as texture
-            Texture2D onlyFrame = Content.Load<Texture2D>("provinces");
-            frame = new Frame(onlyFrame, framePosition, spriteBatch);
+            Texture2D onlyTexture = Content.Load<Texture2D>("provinces");
+            frame = new Frame(onlyTexture, framePosition, spriteBatch);
+            // set frame reference in tile class
+            Tile.setFrame(frame);
 
-            landscape = new Landscape(onlyFrame);
-            tile = landscape.getmaxTextures();
+            landscape = new Landscape(onlyTexture);
+            maxTile = landscape.getmaxTextures();
         }
         
         /// <summary>
@@ -118,12 +122,14 @@ namespace BoardMap
             // mouse click
             if (Mouse.GetState().LeftButton == ButtonState.Pressed) {
                 // save clicked tile
-                tile = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X - (int)frame.Position.X, Mouse.GetState().Y - (int)frame.Position.Y));
+                maxTile = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X - (int)frame.Position.X, Mouse.GetState().Y - (int)frame.Position.Y));
             }
 
             // move map
             frame.shiftMap(GraphicsDevice.PresentationParameters.BackBufferWidth, 
                            GraphicsDevice.PresentationParameters.BackBufferHeight);
+            landscape.changeMapMode(lastKeyboard);
+            lastKeyboard = Keyboard.GetState();
 
                         
             base.Update(gameTime);
@@ -162,9 +168,9 @@ namespace BoardMap
 
             // Tile tile with most textures
             // draw number
-            spriteBatch.DrawString(onlyFont, "Count: " + tile.textures.Count.ToString(), new Vector2(logPosition.X + 15, 130), Color.Black);
+            spriteBatch.DrawString(onlyFont, "Count: " + maxTile.textures.Count.ToString(), new Vector2(logPosition.X + 15, 130), Color.Black);
             // print tile
-            printTileInfo(new Point(logPosition.X, logPosition.Y + 150), tile);
+            printTileInfo(new Point(logPosition.X, logPosition.Y + 150), maxTile);
             
 
 
@@ -183,7 +189,7 @@ namespace BoardMap
             base.Draw(gameTime);
         }
 
-        Tile tile;
+        Tile maxTile;
 
         void printTileInfo(Point _position, Tile _tile) {
             // print square of tile's color

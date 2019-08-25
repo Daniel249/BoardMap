@@ -35,6 +35,7 @@ namespace BoardMap.Graphics
             // check bounds	
             if (pos_x < 0 || pos_x >= Width || pos_y < 0 || pos_y >= Height) {
                 return false;
+                // never
                 throw new IndexOutOfRangeException("ColorData out of bounds");
             }
             // else set

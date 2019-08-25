@@ -188,9 +188,6 @@ namespace BoardMap
         void printTileInfo(Point _position, Tile _tile) {
             // print square of tile's color
             spriteBatch.Draw(whiteRectangle, new Rectangle(_position.X, _position.Y, 15, 15), _tile.color);
-
-            // the rest of text has margin from top
-            // _position.Y += 15;
             
             // print tile position
             string strong = $"X: {_tile.positions[0].X.ToString()} \nY: {_tile.positions[0].Y.ToString()}";

@@ -22,7 +22,7 @@ namespace BoardMap.LandscapeNS
         State[] states;
 
         // tiles
-        // Tile[] tiles;
+        Tile[] definitions;
         public Dictionary<Color, Tile> tiles { get; private set; }
 
 
@@ -45,8 +45,7 @@ namespace BoardMap.LandscapeNS
             // get random tile
             Tile currentTile = tiles.First().Value;// = new Tile();
             // to return actual max
-            foreach(KeyValuePair<Color, Tile> entry in tiles) {
-                Tile _tile = entry.Value;
+            foreach (Tile _tile in tiles.Values) {
                 if (currentTile.textures.Count < _tile.textures.Count) {
                     currentTile = _tile;
                 }
@@ -58,8 +57,13 @@ namespace BoardMap.LandscapeNS
         public Landscape(Texture2D _texture) {
             // init loader with map texture
             TileLoader tloader = new TileLoader(_texture);
+            // init DefinitionsReader
+            DefReader dreader = new DefReader();
+
             // run loader and set tiles
             tiles = tloader.processMap(40);
+            // read file and set definitions
+            definitions = dreader.processFile(tiles);
         }
         // create landscale without loading tiles
         // init stuff to 0

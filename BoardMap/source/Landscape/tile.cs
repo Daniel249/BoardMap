@@ -28,6 +28,9 @@ namespace BoardMap.LandscapeNS
         // is coastal
         public bool isCoastal { get; private set; }
 
+        // continent
+        public int continent { get; private set; }
+
 
         // reference to state
         State state;
@@ -56,8 +59,12 @@ namespace BoardMap.LandscapeNS
         }
 
         // set other attributes, not set in constructor
-        public void setRest(int _id, bool _isLand, bool _isCoastal) {
-            throw new NotImplementedException();
+        // used in DefReader.processFile(dictionary tiles)
+        public void setRest(int _id, bool _isLand, bool _isCoastal, int _continent) {
+            ID = _id;
+            isLand = _isLand;
+            isCoastal = _isCoastal;
+            continent = _continent;
         }
 
     }

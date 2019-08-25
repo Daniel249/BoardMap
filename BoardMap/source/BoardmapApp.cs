@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 using BoardMap.Graphics;
 using BoardMap.Common;
+using BoardMap.LandscapeNS;
 
 namespace BoardMap
 {
@@ -31,6 +32,13 @@ namespace BoardMap
         // Frame containing texture colordata and position
         Frame frame;
 
+        // landscape containing counries states and tiles
+        Landscape landscape;
+
+
+         
+        // font - rectangle - log - fps
+        #region
         // font
         SpriteFont onlyFont;
 
@@ -46,7 +54,7 @@ namespace BoardMap
 
         // fps counter
         Framerate fpsCounter;
-
+        #endregion
 
 
         /// <summary>
@@ -70,13 +78,6 @@ namespace BoardMap
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // init Frame
-            Vector2 framePosition = new Vector2(0, 0);
-            // load map as texture
-            Texture2D onlyFrame = Content.Load<Texture2D>("provinces");
-            frame = new Frame(onlyFrame, framePosition, spriteBatch);
-
-
             // init log
             logPosition = new Point(0, 0);
             logSize = new Point(100, 100);
@@ -89,6 +90,16 @@ namespace BoardMap
 
             // init frps counter
             fpsCounter = new Framerate(5);
+
+
+
+            // init Frame
+            Vector2 framePosition = new Vector2(0, 0);
+            // load map as texture
+            Texture2D onlyFrame = Content.Load<Texture2D>("provinces");
+            frame = new Frame(onlyFrame, framePosition, spriteBatch);
+
+            landscape = new Landscape(onlyFrame);
         }
 
         /// <summary>
@@ -147,6 +158,9 @@ namespace BoardMap
             fpsCounter.Update(gameTime.ElapsedGameTime.TotalSeconds);
             spriteBatch.DrawString(onlyFont, fpsCounter.framerate.ToString("F"), new Vector2(1920 - 50, 15), Color.Black);
 
+
+            // draw numbr of tiles
+            spriteBatch.DrawString(onlyFont, landscape.tiles.Count.ToString(), new Vector2(15, 50), Color.Black);
 
             // sprite end
             spriteBatch.End();

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BoardMap.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace BoardMap.LandscapeNS
 
         // textures
         // bool[] datas
-        public List<bool[]> textures { get; private set; }
+        public List<ColorData<bool>> textures { get; private set; }
         // and color for those locations
         public Color color { get; private set; }
 
@@ -32,7 +33,7 @@ namespace BoardMap.LandscapeNS
         // Polis city;
 
         // if 
-        public void addTexture(bool[] _texture) {
+        public void addTexture(ColorData<bool> _texture) {
             if(textures.Any()) {
                 textures.Add(_texture);
             } else {
@@ -42,9 +43,12 @@ namespace BoardMap.LandscapeNS
         }
 
         // constructor 
-        public Tile(Color _color, bool[] _texture) {
-            textures.Add(_texture);
+        public Tile(Color _color, ColorData<bool> _texture) {
             color = _color;
+
+            textures = new List<ColorData<bool>>();
+            textures.Add(_texture);
+
         }
 
         // set other attributes, not set in constructor

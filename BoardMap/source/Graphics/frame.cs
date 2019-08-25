@@ -17,8 +17,6 @@ namespace BoardMap.Graphics
 
         // texture printed eachFrame
         Texture2D mapTexture;
-        // color data in array form
-        // Color[] colorData;
         // <color> data
         ColorData<Color> colorData;
 
@@ -44,12 +42,6 @@ namespace BoardMap.Graphics
             // correct from afterimage to actual frame
             pos_x = (pos_x + colorData.Width) % colorData.Width;
 
-            // check out of bounds 
-            /*
-            if (pos_y < 0 || pos_y >= mapTexture.Height) {
-                return colorData[0];
-                throw new IndexOutOfRangeException("ColorData out of bounds");
-            } */
             return colorData.get(pos_x, pos_y);
         }
 

@@ -34,5 +34,13 @@ namespace BoardMap.LandscapeNS
             // run loader and set tiles
             tiles = tloader.processData(40);
         }
+        // create landscale without loading tiles
+        // init stuff to 0
+        public Landscape() {
+            tiles = new Dictionary<Color, Tile>();
+            states = new State[0];
+            countries = new Country[0];
+            continents = new Continent[0];
+        }
     }
 }

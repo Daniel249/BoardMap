@@ -16,8 +16,10 @@ namespace BoardMap.LandscapeNS
         public int ID { get; private set; }
 
         // textures
-        // bool[] datas
+        // bool[] color atas
         public List<ColorData<bool>> textures { get; private set; }
+        // textures' positions 
+        public List<Point> positions { get; private set; }
         // and color for those locations
         public Color color { get; private set; }
 
@@ -33,9 +35,10 @@ namespace BoardMap.LandscapeNS
         // Polis city;
 
         // if 
-        public void addTexture(ColorData<bool> _texture) {
+        public void addTexture(Point _point, ColorData<bool> _texture) {
             if(textures.Any()) {
                 textures.Add(_texture);
+                positions.Add(_point);
             } else {
                 // tile was created without a texture
                 throw new NotSupportedException("tile created without texture");
@@ -43,12 +46,13 @@ namespace BoardMap.LandscapeNS
         }
 
         // constructor 
-        public Tile(Color _color, ColorData<bool> _texture) {
+        public Tile(Point _point, ColorData<bool> _texture, Color _color) {
             color = _color;
-
+            // init lists
+            positions = new List<Point>();
+            positions.Add(_point);
             textures = new List<ColorData<bool>>();
             textures.Add(_texture);
-
         }
 
         // set other attributes, not set in constructor

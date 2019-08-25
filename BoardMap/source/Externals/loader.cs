@@ -20,6 +20,9 @@ namespace BoardMap.Externals
         // evtl init tiles with those colordatas
         public Dictionary<Color, Tile> processMap(int range) {
             Dictionary<Color, Tile> dictionary = new Dictionary<Color, Tile>();
+            // create noname tile 
+            Tile noname = new Tile(new Point(0, 0), new ColorData<bool>(new bool[0], 0, 0), Color.Black);
+            dictionary.Add(noname.color, noname);
 
             // loop through pixels left right and up down
             for (int count_y = 0; count_y < mapData.Height; count_y++) {

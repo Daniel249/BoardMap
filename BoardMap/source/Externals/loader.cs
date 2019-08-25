@@ -13,28 +13,42 @@ namespace BoardMap.Externals
     class TileLoader
     {
         // data to process
-        ColorData<Color> colorData;
+        ColorData<Color> mapData;
 
         // main method
-        // process whole frame's colordata and get dictionary from color to colordata
+        // process whole frame's colordata and return dictionary from color to colordata
         // evtl init tiles with those colordatas
-        public Dictionary<Color, ColorData<bool>> processData(int range) {
-            Dictionary<Color, ColorData<bool>> dict = new Dictionary<Color, ColorData<bool>>();
+        public Dictionary<Color, Tile> processData(int range) {
+            Dictionary<Color, Tile> dictionary = new Dictionary<Color, Tile>();
 
             // loop through pixels left right and up down
-            for (int pos_y = 0; pos_y < colorData.Height; pos_y++) {
-                for (int pos_x = 0; pos_x < colorData.Width; pos_x++) {
+            for (int count_y = 0; count_y < mapData.Height; count_y++) {
+                for (int count_x = 0; count_x < mapData.Width; count_x++) {
                     // get color
-                    Color color = colorData.get(pos_x, pos_y);
+                    Color color = mapData.get(count_x, count_y);
                     // if not black -> tile of that color still not processed
                     if (color != Color.Black) {
-                        ColorData<bool> tile = scanRange(ref pos_x, ref pos_y, range);
-                        dict.Add(color, tile);
+                        // copy current location to use by reference
+                        int pos_x = count_x;
+                        int pos_y = count_y;
+                        // generate texture
+                        ColorData<bool> _tile = scanRange(ref pos_x, ref pos_y, range);
+
+                        // check tile not already in dictionary
+                        Tile tile;
+                        if (!dictionary.TryGetValue(color, out tile)) {
+                            // init new tile and add it to return dictionary
+                            tile = new Tile(color, _tile);
+                            dictionary.Add(color, tile);
+                        } else {
+                            // add texture to tile found
+                            tile.addTexture(_tile);
+                        }
                     }
 
                 }
             }
-            return dict;
+            return dictionary;
         }
 
         // search pixels in range to every side and downwards for the color in that position
@@ -42,7 +56,7 @@ namespace BoardMap.Externals
             // init black and white datacolor to return
             ColorData<bool> toReturn = new ColorData<bool>(new bool[2 * range * range], 2 * range, range);
             // get color from starting pixel
-            Color searchColor = colorData.get(pos_x, pos_y);
+            Color searchColor = mapData.get(pos_x, pos_y);
             // set boundaries based on position and range
             pos_x -= range;
             if(pos_x < 0) {
@@ -53,8 +67,8 @@ namespace BoardMap.Externals
             for (int count_y = 0; count_y < range; count_y++) {
                 for (int count_x = 0; count_x < 2*range; count_x++) {
                     // if match, delete pixel and draw on return
-                    if (colorData.get(pos_x + count_x, pos_y + count_y) == searchColor) {
-                        colorData.set(pos_x + count_x, pos_y + count_y, Color.Black);
+                    if (mapData.get(pos_x + count_x, pos_y + count_y) == searchColor) {
+                        mapData.set(pos_x + count_x, pos_y + count_y, Color.Black);
                         toReturn.set(count_x, count_y, true);
                     }
                 }
@@ -126,9 +140,11 @@ namespace BoardMap.Externals
 
         // constructor from texture
         public TileLoader(Texture2D _texture) {
-            Color[] _colorData = new Color[_texture.Width * _texture.Height];
-            _texture.GetData<Color>(_colorData);
-            colorData = new ColorData<Color>(_colorData, _texture.Width, _texture.Height);
+            // set mapData from texture
+            Color[] _mapData = new Color[_texture.Width * _texture.Height];
+            _texture.GetData<Color>(_mapData);
+
+            mapData = new ColorData<Color>(_mapData, _texture.Width, _texture.Height);
         }
     }
 }

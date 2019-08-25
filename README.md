@@ -1,4 +1,5 @@
 # BoardMap
 BoardMap for strategy game 
 
-prob. interface with id name and color
+change scanRange to scanFlood but keep toCut 
+so more textures per tile

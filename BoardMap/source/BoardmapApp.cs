@@ -80,7 +80,7 @@ namespace BoardMap
 
             // init log
             logPosition = new Point(0, 0);
-            logSize = new Point(100, 100);
+            logSize = new Point(150, 250);
             logColor = Color.White;
             whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
             whiteRectangle.SetData(new[] { Color.White });
@@ -100,8 +100,9 @@ namespace BoardMap
             frame = new Frame(onlyFrame, framePosition, spriteBatch);
 
             landscape = new Landscape(onlyFrame);
+            tile = landscape.getmaxTextures();
         }
-
+        
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -114,6 +115,11 @@ namespace BoardMap
                 Exit();
             }
 
+            // mouse click
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed) {
+                // save clicked tile
+                tile = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X - (int)frame.Position.X, Mouse.GetState().Y - (int)frame.Position.Y));
+            }
 
             // move map
             frame.shiftMap(GraphicsDevice.PresentationParameters.BackBufferWidth, 
@@ -143,28 +149,56 @@ namespace BoardMap
 
             // draw background for log
             spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, logSize.X, logSize.Y), logColor);
-            // draw current mouse hover color
-            spriteBatch.Draw(whiteRectangle, new Rectangle(logPosition.X, logPosition.Y, 15, 15), 
-                frame.getColorFrom(Mouse.GetState().X - (int)frame.Position.X, Mouse.GetState().Y - (int)frame.Position.Y));
 
-            // calc string
-            string strong = $" X: {Mouse.GetState().X.ToString()} \n Y: {Mouse.GetState().Y.ToString()}";
-            // write mouse coords
-            spriteBatch.DrawString(onlyFont, strong, new Vector2(15, 15), Color.Black);
+            // print mouse location
+            string strong = $"{Mouse.GetState().X.ToString()}   {Mouse.GetState().Y.ToString()}";
+            spriteBatch.DrawString(onlyFont, strong, new Vector2(logPosition.X + 15, logPosition.Y + 20), Color.Black);
+
+            // print current tile hover
+            Tile tileHover = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X - (int)frame.Position.X, Mouse.GetState().Y - (int)frame.Position.Y));
+            printTileInfo(new Point(logPosition.X, logPosition.Y + 50), tileHover);
 
 
+
+            // Tile tile with most textures
+            // draw number
+            spriteBatch.DrawString(onlyFont, "Count: " + tile.textures.Count.ToString(), new Vector2(logPosition.X + 15, 130), Color.Black);
+            // print tile
+            printTileInfo(new Point(logPosition.X, logPosition.Y + 150), tile);
+            
+
+
+            // Right Corner
 
             // draw fpsCounter
             fpsCounter.Update(gameTime.ElapsedGameTime.TotalSeconds);
             spriteBatch.DrawString(onlyFont, fpsCounter.framerate.ToString("F"), new Vector2(1920 - 50, 15), Color.Black);
 
+            // draw number of loaded tiles
+            spriteBatch.DrawString(onlyFont, landscape.tiles.Count.ToString(), new Vector2(1920 - 50, 45), Color.Black);
 
-            // draw numbr of tiles
-            spriteBatch.DrawString(onlyFont, landscape.tiles.Count.ToString(), new Vector2(15, 50), Color.Black);
 
             // sprite end
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        Tile tile;
+
+        void printTileInfo(Point _position, Tile _tile) {
+            // print square of tile's color
+            spriteBatch.Draw(whiteRectangle, new Rectangle(_position.X, _position.Y, 15, 15), _tile.color);
+
+            // the rest of text has margin from top
+            // _position.Y += 15;
+            
+            // print tile position
+            string strong = $"X: {_tile.positions[0].X.ToString()} \nY: {_tile.positions[0].Y.ToString()}";
+            spriteBatch.DrawString(onlyFont, strong, new Vector2(_position.X + 20, _position.Y), Color.Black);
+
+            // print tile rgb value
+            strong = $"R: {_tile.color.R} \nG: {_tile.color.G} \nB: {_tile.color.B}";
+            spriteBatch.DrawString(onlyFont, strong, new Vector2(_position.X + 100, _position.Y), Color.Black);
         }
 
 

@@ -18,7 +18,7 @@ namespace BoardMap.Externals
         // main method
         // process whole frame's colordata and return dictionary from color to colordata
         // evtl init tiles with those colordatas
-        public Dictionary<Color, Tile> processData(int range) {
+        public Dictionary<Color, Tile> processMap(int range) {
             Dictionary<Color, Tile> dictionary = new Dictionary<Color, Tile>();
 
             // loop through pixels left right and up down
@@ -38,11 +38,11 @@ namespace BoardMap.Externals
                         Tile tile;
                         if (!dictionary.TryGetValue(color, out tile)) {
                             // init new tile and add it to return dictionary
-                            tile = new Tile(color, _tile);
+                            tile = new Tile(new Point(pos_x, pos_y), _tile, color);
                             dictionary.Add(color, tile);
                         } else {
                             // add texture to tile found
-                            tile.addTexture(_tile);
+                            tile.addTexture(new Point(pos_x, pos_y), _tile);
                         }
                     }
 

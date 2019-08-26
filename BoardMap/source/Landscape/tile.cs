@@ -42,11 +42,11 @@ namespace BoardMap.LandscapeNS
         public static Frame frameReference;
 
         // draw tile to frame
-        public void drawTile() {
-            drawTile(color);
+        public void drawTile(ColorData<Color> blankCanvas) {
+            drawTile(color, blankCanvas);
         }
         // overload with color
-        public void drawTile(Color _color) {
+        public void drawTile(Color _color, ColorData<Color> blankCanvas) {
             // loop textures and positions
             for (int count = 0; count < textures.Count; count++) {
                 ColorData<bool> currentTexture = textures[count];
@@ -56,7 +56,7 @@ namespace BoardMap.LandscapeNS
                     for(int rel_x = 0; rel_x < currentTexture.Width; rel_x++) {
                         // get black and white pixel and draw color if true/black
                         if (currentTexture.get(rel_x, rel_y)) {
-                            frameReference.setColorFrom(
+                            blankCanvas.set(
                                 positions[count].X + rel_x, positions[count].Y + rel_y, _color);
                         }
                     }

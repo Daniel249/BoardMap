@@ -56,5 +56,11 @@ namespace BoardMap.Graphics
             Height = _height;
             Width = _width;
         }
+        // without data
+        public ColorData(int _width, int _height) {
+            data = new T[_width *_height];
+            Height = _height;
+            Width = _width;
+        }
     }
 }

@@ -28,7 +28,9 @@ namespace BoardMap.LandscapeNS
 
         // map modes
         // change map mode with keyboard
- 
+
+        // tile counter for R
+        int counter = 1;
         public void changeMapMode(KeyboardState lastState) {
             // get currentState
             KeyboardState currentState = Keyboard.GetState();
@@ -40,39 +42,50 @@ namespace BoardMap.LandscapeNS
             List<Keys> listKeys = new List<Keys>(newlyPressed);
 
             // if no newly pressed return immediately
-            if(!listKeys.Any<Keys>()) {
+            if(!listKeys.Any<Keys>() || listKeys.Contains(Keys.Escape)) {
                 return;
             }
+
+            ColorData<Color> canvas = Tile.frameReference.getBlankCanvas();
 
             // check keyboard
             if (listKeys.Contains(Keys.Q)) {
 
                 // Q: every tile draws its color 
                 for (int i = 1; i < definitions.Length; i++) {
-                    definitions[i].drawTile();
+                    definitions[i].drawTile(canvas);
                 }
             } else if (listKeys.Contains(Keys.W)) {
 
                 // W: draw every continent 
                 for (int i = 1; i < definitions.Length; i++) {
                     // draw tile with continent color
-                    definitions[i].drawTile(continents[definitions[i].continent].color);
+                    definitions[i].drawTile(continents[definitions[i].continent].color, canvas);
                 }
             } else if (listKeys.Contains(Keys.E)) {
 
                 // E: draw land
                 for (int i = 1; i < definitions.Length; i++) {
                     if (definitions[i].isLand) {
-                        definitions[i].drawTile(Color.Brown);
-                    }
-                    else {
-                        definitions[i].drawTile(Color.Cyan);
+                        definitions[i].drawTile(Color.Brown, canvas);
+                    } else {
+                        definitions[i].drawTile(Color.Cyan, canvas);
                     }
                 }
-            }
+            } else if (listKeys.Contains(Keys.R)) {
 
+                // R: draw only one tile
+                // draw a tile on canvas
+                int howMany = 10;
+                for(int i = 0; i < howMany; i++) {
+                    definitions[i + counter].drawTile(canvas);
+                }
+                counter += howMany;
+
+            }
+            Tile.frameReference.updateTexture(canvas);
             // update texture colodata
-            Tile.frameReference.updateTexture();
+            // Tile.frameReference.updateTexture();
         }
 
 
@@ -86,6 +99,10 @@ namespace BoardMap.LandscapeNS
                 return definitions[0];
             }
             // else return
+        }
+
+        public Tile searchTile(int _id) {
+            return definitions[_id];
         }
 
 
@@ -125,7 +142,7 @@ namespace BoardMap.LandscapeNS
             DefReader dreader = new DefReader();
 
             // run loader and set tiles
-            tiles = tloader.processMap(40);
+            tiles = tloader.processMap(50);
             // read file and set definitions
             definitions = dreader.processFile(tiles);
 

@@ -35,7 +35,9 @@ namespace BoardMap
         // landscape containing counries states and tiles
         Landscape landscape;
 
+        // input states for comparison
         KeyboardState lastKeyboard;
+        MouseState lastMouse;
 
          
         // font - rectangle - log - fps
@@ -94,9 +96,10 @@ namespace BoardMap
 
             // init keyboard state stored for comparison
             lastKeyboard = Keyboard.GetState();
+            lastMouse = Mouse.GetState();
 
             // init Frame
-            Vector2 framePosition = new Vector2(0, 0);
+            Point framePosition = new Point(0, 0);
             // load map as texture
             Texture2D onlyTexture = Content.Load<Texture2D>("provinces");
             frame = new Frame(onlyTexture, framePosition, spriteBatch);
@@ -105,7 +108,7 @@ namespace BoardMap
 
             landscape = new Landscape(onlyTexture);
             // get first tile
-            maxTile = landscape.searchTile(1);
+            selectedTile = landscape.searchTile(1);
         }
         
         /// <summary>
@@ -123,15 +126,20 @@ namespace BoardMap
             // mouse click
             if (Mouse.GetState().LeftButton == ButtonState.Pressed) {
                 // save clicked tile
-                maxTile = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X - (int)frame.Position.X, Mouse.GetState().Y - (int)frame.Position.Y));
+                selectedTile = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X, Mouse.GetState().Y));
             }
 
             // move map
             frame.shiftMap(GraphicsDevice.PresentationParameters.BackBufferWidth, 
                            GraphicsDevice.PresentationParameters.BackBufferHeight);
+
+            // keyboard
             landscape.changeMapMode(lastKeyboard);
             lastKeyboard = Keyboard.GetState();
 
+            // mouse
+            frame.checkZoom(lastMouse);
+            lastMouse = Mouse.GetState();
                         
             base.Update(gameTime);
         }
@@ -162,16 +170,17 @@ namespace BoardMap
             spriteBatch.DrawString(onlyFont, strong, new Vector2(logPosition.X + 15, logPosition.Y + 20), Color.Black);
 
             // print current tile hover
-            Tile tileHover = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X - (int)frame.Position.X, Mouse.GetState().Y - (int)frame.Position.Y));
+            Tile tileHover = landscape.searchTile(frame.getColorFrom(
+                Mouse.GetState().X, Mouse.GetState().Y));
             printTileInfo(new Point(logPosition.X, logPosition.Y + 50), tileHover);
 
 
 
             // Tile tile with most textures
             // draw number
-            spriteBatch.DrawString(onlyFont, "Count: " + maxTile.textures.Count.ToString(), new Vector2(logPosition.X + 15, 130), Color.Black);
+            spriteBatch.DrawString(onlyFont, "Count: " + selectedTile.textures.Count.ToString(), new Vector2(logPosition.X + 15, 130), Color.Black);
             // print tile
-            printTileInfo(new Point(logPosition.X, logPosition.Y + 150), maxTile);
+            printTileInfo(new Point(logPosition.X, logPosition.Y + 150), selectedTile);
             
 
 
@@ -184,13 +193,16 @@ namespace BoardMap
             // draw number of loaded tiles
             spriteBatch.DrawString(onlyFont, landscape.tiles.Count.ToString(), new Vector2(1920 - 50, 45), Color.Black);
 
+            // draw currentZoom
+            spriteBatch.DrawString(onlyFont, $"Zoom: {frame.currentZoom.ToString()}", new Vector2(1920 - 100, 75), Color.Black);
+
 
             // sprite end
             spriteBatch.End();
             base.Draw(gameTime);
         }
 
-        Tile maxTile;
+        Tile selectedTile;
 
         void printTileInfo(Point _position, Tile _tile) {
             // print square of tile's color

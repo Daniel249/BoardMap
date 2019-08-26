@@ -104,7 +104,8 @@ namespace BoardMap
             Tile.setFrame(frame);
 
             landscape = new Landscape(onlyTexture);
-            maxTile = landscape.getmaxTextures();
+            // get first tile
+            maxTile = landscape.searchTile(1);
         }
         
         /// <summary>
@@ -194,14 +195,18 @@ namespace BoardMap
         void printTileInfo(Point _position, Tile _tile) {
             // print square of tile's color
             spriteBatch.Draw(whiteRectangle, new Rectangle(_position.X, _position.Y, 15, 15), _tile.color);
-            
-            // print tile position
-            string strong = $"X: {_tile.positions[0].X.ToString()} \nY: {_tile.positions[0].Y.ToString()}";
+
+            // print tile id
+            string strong = $"ID: {_tile.ID.ToString()}";
             spriteBatch.DrawString(onlyFont, strong, new Vector2(_position.X + 20, _position.Y), Color.Black);
+
+            // print tile position
+            strong = $"X: {_tile.positions[0].X.ToString()} \nY: {_tile.positions[0].Y.ToString()}";
+            spriteBatch.DrawString(onlyFont, strong, new Vector2(_position.X + 20, _position.Y + 20), Color.Black);
 
             // print tile rgb value
             strong = $"R: {_tile.color.R} \nG: {_tile.color.G} \nB: {_tile.color.B}";
-            spriteBatch.DrawString(onlyFont, strong, new Vector2(_position.X + 100, _position.Y), Color.Black);
+            spriteBatch.DrawString(onlyFont, strong, new Vector2(_position.X + 100, _position.Y + 20), Color.Black);
         }
 
 

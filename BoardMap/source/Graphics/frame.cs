@@ -23,6 +23,10 @@ namespace BoardMap.Graphics
         // after image is to the left or not
         bool afterImageLeft;
 
+        // get size
+        public int Size_x { get { return mapTexture.Width; } }
+        public int Size_y { get { return mapTexture.Height; } }
+
 
         // use spriteBatch to draw frame 
         public void Draw(SpriteBatch spriteBatch) {
@@ -52,6 +56,9 @@ namespace BoardMap.Graphics
         // update mapTexture with colorData
         public void updateTexture() {
             mapTexture.SetData<Color>(colorData.Data);
+        }
+        public void updateTexture(ColorData<Color> canvas) {
+            mapTexture.SetData<Color>(canvas.Data);
         }
 
         // copy colordata to texture
@@ -103,6 +110,11 @@ namespace BoardMap.Graphics
             
         }
 
+        // get blank canvas
+        public ColorData<Color> getBlankCanvas() {
+            return new ColorData<Color>(colorData.Width, colorData.Height);
+        }
+
         // constructor
         public Frame(Texture2D _texture, Vector2 _position, SpriteBatch _spriteBatch) {
             // set texture and its position
@@ -111,9 +123,9 @@ namespace BoardMap.Graphics
 
             // init color[] data from texture
             Color[] _colorData = new Color[_texture.Width * _texture.Height];
-            // then save it to colordata and texture
-            colorData = new ColorData<Color>(_colorData, _texture.Width, _texture.Height);
             _texture.GetData<Color>(_colorData);
+            // then save it to colordata
+            colorData = new ColorData<Color>(_colorData, _texture.Width, _texture.Height);
         }
     }
 }

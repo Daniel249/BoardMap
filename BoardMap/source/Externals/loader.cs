@@ -21,7 +21,7 @@ namespace BoardMap.Externals
         public Dictionary<Color, Tile> processMap(int range) {
             Dictionary<Color, Tile> dictionary = new Dictionary<Color, Tile>();
             // create noname tile 
-            Tile noname = new Tile(new Point(0, 0), new ColorData<bool>(new bool[0], 0, 0), Color.Black);
+            Tile noname = new Tile(new Point(0, 0), new ColorData<bool>(0, 0), Color.Black);
             dictionary.Add(noname.color, noname);
 
             // loop through pixels left right and up down
@@ -56,89 +56,99 @@ namespace BoardMap.Externals
         // search pixels in range to every side and downwards for the color in that position
         ColorData<bool> scanRange(ref int pos_x, ref int pos_y, int range) {
             // init black and white datacolor to return
-            ColorData<bool> toReturn = new ColorData<bool>(new bool[2 * range * range], 2 * range, range);
+            ColorData<bool> overkill = new ColorData<bool>(2 * range, range);
             // get color from starting pixel
             Color searchColor = mapData.get(pos_x, pos_y);
-            // set boundaries based on position and range
+
+            // set overkill's relative position in map texture to scan - Note: limit_x first as absolute then as relative
+            // set finishing y to {range} or bound by mapdata height
+            int limit_y;
+            if (pos_y + range < mapData.Height) {
+                limit_y = range;
+            } else {
+                limit_y = mapData.Height - pos_y;
+            }
+
+            // set finishing -absolute x in mapdata- to {range} relative to position or bound by mapdata width
+            int limit_x;
+            if (pos_x + range < mapData.Width) {
+                limit_x = pos_x + range;
+            } else {
+                limit_x = mapData.Width;
+            }
+            // set scan absolute position to map texture - start {range} to the left and same height
             pos_x -= range;
             if(pos_x < 0) {
                 pos_x = 0;
             }
+            // get distance from pos_x to limit_x to use on loop
+            limit_x = limit_x - pos_x;
 
-            // set black and white overkill image
-            for (int count_y = 0; count_y < range; count_y++) {
-                for (int count_x = 0; count_x < 2*range; count_x++) {
+            // init margins to max for cut to 0x0
+            // where the reduced image already starts
+            int topMargin = range; // -1
+            int leftMargin = 2 * range; // -1
+            int bottomMargin = 0;
+            int rightMargin = 0;
+
+            // loop through texture and extract overkill black and white image
+            for (int count_y = 0; count_y < limit_y; count_y++) {
+                for (int count_x = 0; count_x < limit_x; count_x++) {
                     // if match, delete pixel and draw on return
                     if (mapData.get(pos_x + count_x, pos_y + count_y) == searchColor) {
                         mapData.set(pos_x + count_x, pos_y + count_y, Color.Black);
-                        toReturn.set(count_x, count_y, true);
+                        overkill.set(count_x, count_y, true);
+                        
+                        // then lower margins for later cut
+                        if (leftMargin > count_x) {
+                            leftMargin = count_x;
+                        }
+                        if (topMargin > count_y) {
+                            topMargin = count_y;
+                        }
+                        if (rightMargin < count_x) {
+                            rightMargin = count_x;
+                        }
+                        if (bottomMargin < count_y) {
+                            bottomMargin = count_y;
+                        }
                     }
                 }
             }
+
+            // init colordata to return with empty array of cut size
+            ColorData<bool> reducedImage = new ColorData<bool>(rightMargin - leftMargin + 1, bottomMargin - topMargin + 1);
+
+            // produce cut version
+            for (int count_y = 0; count_y < reducedImage.Height; count_y++) {
+                for (int count_x = 0; count_x < reducedImage.Width; count_x++) {
+                    // get color
+                    bool toPrint = overkill.get(leftMargin + count_x, topMargin + count_y);
+                    // draw color
+                    reducedImage.set(count_x, count_y, toPrint);
+                }
+            }
+
+            // update position to aftercut position relative to whole map texture
+            pos_x += leftMargin;
+            pos_y += topMargin;
+
+            return reducedImage;
+
             // cut image and update its position relative to frame
-            return cutData(ref pos_x, ref pos_y, toReturn);
+            //return cutData(ref pos_x, ref pos_y, reducedImage);
         }
 
-        // cut toReturn color data from scanRange() to lowest possible size 
-        // and change position relative to frame accordingly
-        ColorData<bool> cutData(ref int pos_x, ref int pos_y, ColorData<bool> toCut) {
-            // init all sides' offset to move
-            int up = toCut.Height;
-            int left = toCut.Width;
-            int right = 0;
-            int down = 0;
+        // flood pixels with same color as point 
+        ColorData<bool> scanFlood(ref int pos_x, ref int pos_y) {
+            // init black and white datacolor to return
+            ColorData<bool> toReturn = new ColorData<bool>(2 , 1);
 
-            // run from left to right and up down
-            for (int count_y = 0; count_y < toCut.Height; count_y++) {
-                for (int count_x = 0; count_x < toCut.Width; count_x++) {
-                    // if find
-                    if (toCut.get(count_x, count_y) == true) {
-                        // expected to always set once to 0
-                        if(up > count_y) {
-                            up = count_y;
-                        }
-                        // minimun distance from left frame
-                        if(left > count_x) {
-                            left = count_x;
-                        }
-                    }
-                }
-            }
-            // run from right to left and down up
-            for (int count_y = toCut.Height - 1; count_y >= 0; count_y--) {
-                for (int count_x = toCut.Width - 1; count_x >= 0; count_x--) {
-                    // if find
-                    if (toCut.get(count_x, count_y) == true) {
-                        // minimum distance from bottom frame
-                        if (down < count_y) {
-                            down = count_y;
-                        }
-                        // minimum distance from right frame
-                        if (right < count_x) {
-                            right = count_x;
-                        }
-                    }
-                }
-            }
-            // init colordata to return with empty array of cut size
-            ColorData<bool> toReturn = new ColorData<bool>(new bool[(right - left) * (down - up)], 
-                (right - left), (down - up));
 
-            // load toReturn with data from toCut
-            for (int count_y = 0; count_y < toReturn.Height; count_y++) {
-                for (int count_x = 0; count_x < toReturn.Width; count_x++) {
-                    // get color
-                    bool toPrint = toCut.get(count_x + left, count_y + up);
-                    // draw color
-                    toReturn.set(count_x, count_y, toPrint);
-                }
-            }
 
-            // update position relative to frame and return
-            pos_x += left;
-            pos_y += up;
             return toReturn;
         }
+
 
         // constructor from texture
         public TileLoader(Texture2D _texture) {

@@ -18,15 +18,18 @@ namespace BoardMap.Externals
         // main method
         // return tiles ordered in array
         public Tile[] processFile(Dictionary<Color, Tile> tiles) {
+            // init readline buffer
             List<string[]> split = new List<string[]>();
+
+            // ReadLine format: ID;R;G;B;land?;coastal?;terrain;continent
 
             // stream reader
             using (StreamReader reader = new StreamReader(path)) {
-                // dont stop
+                // loop through lines
                 while (!reader.EndOfStream) {
                     // get partition by semicolon
                     string[] _split = reader.ReadLine().Split(';');
-                    // save to split
+                    // save to list
                     split.Add(_split);
                 }
             }
@@ -40,7 +43,7 @@ namespace BoardMap.Externals
                 throw new NotSupportedException("definitions and mapdata don't match");
             }
 
-            // produce tiles
+            // produce tiles from: id, rgb, land?, coastal?, continent
             foreach (Tile tile in tiles.Values) {
                 // loop through split for match for testTile
                 for (int count_tile = 0; count_tile < split.Count; count_tile++) {

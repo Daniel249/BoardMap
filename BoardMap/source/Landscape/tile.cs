@@ -33,7 +33,7 @@ namespace BoardMap.LandscapeNS
 
 
         // reference to state
-        State state;
+        public State state { get; private set; }
         // reference to city | null if not a city
         // Polis city;
 
@@ -84,6 +84,10 @@ namespace BoardMap.LandscapeNS
             positions.Add(_point);
             textures = new List<ColorData<bool>>();
             textures.Add(_texture);
+        }
+
+        public void setState(State _state) {
+            state = _state;
         }
 
         // set other attributes, not set in constructor

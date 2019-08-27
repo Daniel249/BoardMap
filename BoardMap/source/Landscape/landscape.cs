@@ -17,7 +17,7 @@ namespace BoardMap.LandscapeNS
         Continent[] continents;
 
         // countries
-        Country[] countries;
+        public Dictionary<string, Country> countries { get; private set; }
 
         // states 
         State[] states;
@@ -74,18 +74,39 @@ namespace BoardMap.LandscapeNS
                 }
             } else if (listKeys.Contains(Keys.R)) {
 
-                // R: draw only one tile
+                // R: draw states
+                for (int i = 1; i < definitions.Length; i++) {
+                    if (definitions[i].isLand) {
+                        definitions[i].drawTile(definitions[i].state.color, canvas);
+                    } else {
+                        definitions[i].drawTile(Color.Cyan, canvas);
+                    }
+                }
+            } else if (listKeys.Contains(Keys.T)) {
+
+                // T: draw countries
+                for (int i = 1; i < definitions.Length; i++) {
+                    if (definitions[i].isLand) {
+                        definitions[i].drawTile(definitions[i].state.country.color, canvas);
+                    } else {
+                        definitions[i].drawTile(Color.White, canvas);
+                    }
+                }
+            } else if (listKeys.Contains(Keys.P)) {
+
+                // P: draw only one tile
                 // draw a tile on canvas
                 int howMany = 10;
                 for(int i = 0; i < howMany; i++) {
                     definitions[i + counter].drawTile(canvas);
                 }
                 counter += howMany;
-
+            } else {
+                // if no match dont print blank canvas
+                return;
             }
-            Tile.frameReference.updateTexture(canvas);
             // update texture colodata
-            // Tile.frameReference.updateTexture();
+            Tile.frameReference.updateTexture(canvas);
         }
 
 
@@ -103,6 +124,9 @@ namespace BoardMap.LandscapeNS
 
         public Tile searchTile(int _id) {
             return definitions[_id];
+        }
+        public Country searchCountry(string _tag) {
+            return countries[_tag];
         }
 
 
@@ -136,25 +160,38 @@ namespace BoardMap.LandscapeNS
 
         // constructor
         public Landscape(Texture2D _texture) {
+            genLandscape();
             // init loader with map texture
             TileLoader tloader = new TileLoader(_texture);
-            // init DefinitionsReader
+            // init reader for definitions.csv
             DefReader dreader = new DefReader();
+            // init reader for countries.txt
+            LandReader lreader = new LandReader();
 
             // run loader and set tiles
             tiles = tloader.processMap(50);
             // read file and set definitions
             definitions = dreader.processFile(tiles);
+            // read file and set countries
+            countries = lreader.processFile();
+
+            // init reader for states folder
+            StateReader sreader = new StateReader(this); // needs initialized tiles 
+            // read files and set states
+            states = sreader.processFile();
+            State.initStates(states);
+
 
             // init continents
             initContinents();
         }
         // create landscale without loading tiles
         // init stuff to 0
-        public Landscape() {
+        public void genLandscape() {
             tiles = new Dictionary<Color, Tile>();
+            definitions = new Tile[0];
             states = new State[0];
-            countries = new Country[0];
+            countries = new Dictionary<string, Country>();
             continents = new Continent[0];
         }
     }

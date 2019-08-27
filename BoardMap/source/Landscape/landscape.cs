@@ -32,7 +32,7 @@ namespace BoardMap.LandscapeNS
         // tile counter for R
         int counter = 1;
 
-        Color waterColor = new Color(153, 179, 255);
+        public Color waterColor = new Color(163, 192, 245); //Color.CornflowerBlue; // = new Color(128, 255, 255);
         public void changeMapMode(KeyboardState lastState) {
             // get currentState
             KeyboardState currentState = Keyboard.GetState();
@@ -55,7 +55,10 @@ namespace BoardMap.LandscapeNS
 
                 // Q: every tile draws its color 
                 for (int i = 1; i < definitions.Length; i++) {
-                    definitions[i].drawTile(canvas);
+                    // if not ocean
+                    if(definitions[i].isLand) {
+                        definitions[i].drawTile(canvas);
+                    }
                 }
             } else if (listKeys.Contains(Keys.W)) {
 
@@ -75,9 +78,8 @@ namespace BoardMap.LandscapeNS
                         }
                         // draw
                         definitions[i].drawTile(stateColor, canvas);
-                    }
-                    else {
-                        definitions[i].drawTile(waterColor, canvas);
+                    } else {
+                        // definitions[i].drawTile(waterColor, canvas);
                     }
                 }
             } else if (listKeys.Contains(Keys.E)) {
@@ -86,17 +88,19 @@ namespace BoardMap.LandscapeNS
                 for (int i = 1; i < definitions.Length; i++) {
                     if (definitions[i].isLand) {
                         definitions[i].drawTile(definitions[i].state.country.color, canvas);
-                    }
-                    else {
-                        definitions[i].drawTile(Color.White, canvas);
+                    } else {
+                        // definitions[i].drawTile(waterColor, canvas);
                     }
                 }
             } else if (listKeys.Contains(Keys.R)) {
 
                 // R: draw continents
                 for (int i = 1; i < definitions.Length; i++) {
-                    // draw tile with continent color
-                    definitions[i].drawTile(continents[definitions[i].continent].color, canvas);
+                    // if not ocean
+                    if(definitions[i].isLand) {
+                        // draw tile with continent color
+                        definitions[i].drawTile(continents[definitions[i].continent].color, canvas);
+                    }
                 }
 
             } else if (listKeys.Contains(Keys.T)) {
@@ -105,9 +109,8 @@ namespace BoardMap.LandscapeNS
                 for (int i = 1; i < definitions.Length; i++) {
                     if (definitions[i].isLand) {
                         definitions[i].drawTile(Color.Brown, canvas);
-                    }
-                    else {
-                        definitions[i].drawTile(waterColor, canvas);
+                    } else {
+                        // definitions[i].drawTile(waterColor, canvas);
                     }
                 }
 
@@ -186,7 +189,10 @@ namespace BoardMap.LandscapeNS
                     // draw each tile in state with 
                     State currentState = _state.country.states[state_count];
                     for (int i = 0; i < currentState.tiles.Length; i++) {
-                        currentState.tiles[i].drawTile(color, currentTexture);
+                        // if land
+                        if(currentState.tiles[i].isLand) {
+                            currentState.tiles[i].drawTile(color, currentTexture);
+                        }
                     }
 
                 }
@@ -230,7 +236,7 @@ namespace BoardMap.LandscapeNS
         // init  and assign continents
         void initContinents() {
             continents = new Continent[8] {
-                new Continent(0, "Oceans", Color.Cyan),
+                new Continent(0, "Oceans", waterColor),
                 new Continent(1, "Europe", new Color(0, 51, 153)),
                 new Continent(2, "North America", Color.Green),
                 new Continent(3, "South America", Color.Gold),

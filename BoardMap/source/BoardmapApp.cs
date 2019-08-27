@@ -127,6 +127,8 @@ namespace BoardMap
             if (Mouse.GetState().LeftButton == ButtonState.Pressed) {
                 // save clicked tile
                 selectedTile = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X, Mouse.GetState().Y));
+                // draw light state
+                landscape.drawLightState(selectedTile);
             }
 
             // move map

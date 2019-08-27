@@ -21,7 +21,7 @@ namespace BoardMap.LandscapeNS
         public int population { get; private set; }
 
         // references to tiles
-        Tile[] tiles;
+        public Tile[] tiles { get; private set; }
         // reference to country
         public Country country { get; private set; }
         // cities in state

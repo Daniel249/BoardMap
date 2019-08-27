@@ -31,6 +31,8 @@ namespace BoardMap.LandscapeNS
 
         // tile counter for R
         int counter = 1;
+
+        Color waterColor = new Color(153, 179, 255);
         public void changeMapMode(KeyboardState lastState) {
             // get currentState
             KeyboardState currentState = Keyboard.GetState();
@@ -57,41 +59,54 @@ namespace BoardMap.LandscapeNS
                 }
             } else if (listKeys.Contains(Keys.W)) {
 
-                // W: draw every continent 
+                // W: draw states 
                 for (int i = 1; i < definitions.Length; i++) {
-                    // draw tile with continent color
-                    definitions[i].drawTile(continents[definitions[i].continent].color, canvas);
+                    if (definitions[i].isLand) {
+                        // make color less blue
+                        Color stateColor = definitions[i].state.color;
+                        stateColor.R += stateColor.B;
+                        stateColor.B -= stateColor.B;
+                        if(stateColor.B < 0) {
+                            stateColor.B = 0;
+                        }
+                        // draw
+                        definitions[i].drawTile(stateColor, canvas);
+                    }
+                    else {
+                        definitions[i].drawTile(waterColor, canvas);
+                    }
                 }
             } else if (listKeys.Contains(Keys.E)) {
 
-                // E: draw land
+                // E: draw countries
                 for (int i = 1; i < definitions.Length; i++) {
                     if (definitions[i].isLand) {
-                        definitions[i].drawTile(Color.Brown, canvas);
-                    } else {
-                        definitions[i].drawTile(Color.Cyan, canvas);
+                        definitions[i].drawTile(definitions[i].state.country.color, canvas);
+                    }
+                    else {
+                        definitions[i].drawTile(Color.White, canvas);
                     }
                 }
             } else if (listKeys.Contains(Keys.R)) {
 
-                // R: draw states
+                // R: draw continents
                 for (int i = 1; i < definitions.Length; i++) {
-                    if (definitions[i].isLand) {
-                        definitions[i].drawTile(definitions[i].state.color, canvas);
-                    } else {
-                        definitions[i].drawTile(Color.Cyan, canvas);
-                    }
+                    // draw tile with continent color
+                    definitions[i].drawTile(continents[definitions[i].continent].color, canvas);
                 }
+
             } else if (listKeys.Contains(Keys.T)) {
 
-                // T: draw countries
+                // T: draw draw land
                 for (int i = 1; i < definitions.Length; i++) {
                     if (definitions[i].isLand) {
-                        definitions[i].drawTile(definitions[i].state.country.color, canvas);
-                    } else {
-                        definitions[i].drawTile(Color.White, canvas);
+                        definitions[i].drawTile(Color.Brown, canvas);
+                    }
+                    else {
+                        definitions[i].drawTile(waterColor, canvas);
                     }
                 }
+
             } else if (listKeys.Contains(Keys.P)) {
 
                 // P: draw only one tile
@@ -105,6 +120,8 @@ namespace BoardMap.LandscapeNS
                 // if no match dont print blank canvas
                 return;
             }
+            // update frame colordata
+            Tile.frameReference.setDataColor(canvas);
             // update texture colodata
             Tile.frameReference.updateTexture(canvas);
         }
@@ -120,6 +137,33 @@ namespace BoardMap.LandscapeNS
                 return definitions[0];
             }
             // else return
+        }
+
+        public void drawLightState(Tile _tile) {
+            // get state
+            State lighttState = _tile.state;
+
+            // if null is ocean probably
+            if(lighttState != null) {
+                // get color and make lighter
+                // set to fraction of distance to 255 from lightState.color
+                Color lightColor = new Color(
+                    255 - (255 - lighttState.color.R) * 2 / 3,
+                    255 - (255 - lighttState.color.G) * 2 / 3,
+                    255 - (255 - lighttState.color.B) * 2 / 3);
+
+                // get data from frame once
+                ColorData<Color> currentTexture = Tile.frameReference.colorData.getCopy();
+                // draw each tile in state with light color
+                for (int i = 0; i < lighttState.tiles.Length; i++) {
+                    lighttState.tiles[i].drawTile(lightColor, currentTexture);
+                }
+                // redraw selected tile with state color
+                _tile.drawTile(_tile.state.color, currentTexture);
+                // update texture
+                Tile.frameReference.updateTexture(currentTexture);
+            }
+
         }
 
         public Tile searchTile(int _id) {

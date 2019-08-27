@@ -18,7 +18,9 @@ namespace BoardMap.Graphics
         // texture printed eachFrame
         Texture2D mapTexture;
         // <color> data
-        ColorData<Color> colorData;
+        public ColorData<Color> colorData { get; private set; }
+        // original data
+        ColorData<Color> ogData;
 
         // get size
         public int Size_x { get { return mapTexture.Width; } }
@@ -83,7 +85,7 @@ namespace BoardMap.Graphics
             //int loc_x = (int)(pos_x * 100/currentZoom);
             //int loc_y = (int)(pos_y * 100/currentZoom);
 
-            return colorData.get(pos_x, pos_y);
+            return ogData.get(pos_x, pos_y);
         }
 
         // update mapTexture with colorData
@@ -92,12 +94,26 @@ namespace BoardMap.Graphics
         }
         public void updateTexture(ColorData<Color> canvas) {
             mapTexture.SetData<Color>(canvas.Data);
+            // colorData = canvas;
         }
 
         // copy colordata to texture
-        public void getAllData(Texture2D blankTexture) {
-            blankTexture.SetData<Color>(colorData.Data);
+        public void setDataColor(ColorData<Color> canvas) {
+            colorData = canvas;
         }
+        // get data from texture as colordata
+        public ColorData<Color> getAllData() {
+            /* get data from texture
+            // init datacolor
+            ColorData<Color> returnData = new ColorData<Color>(mapTexture.Width, mapTexture.Height);
+            // save texture to its data array
+            mapTexture.GetData<Color>(returnData.Data);
+            return returnData;
+            */
+            // get data from datacolor
+            return colorData.getCopy();
+        }
+
 
 
     
@@ -230,6 +246,8 @@ namespace BoardMap.Graphics
             _texture.GetData<Color>(_colorData);
             // then save it to colordata
             colorData = new ColorData<Color>(_colorData, _texture.Width, _texture.Height);
+            // also save ogData
+            ogData = colorData.getCopy();
 
             zoomSize = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
         }

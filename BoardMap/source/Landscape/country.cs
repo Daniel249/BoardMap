@@ -25,7 +25,7 @@ namespace BoardMap.LandscapeNS
         // probably City capital evtl !!
 
         // references to states
-        List<State> states;
+        public List<State> states { get; private set; }
 
         public void setColor(int r, int g, int b) {
             color = new Color(r, g, b);

@@ -128,7 +128,9 @@ namespace BoardMap
                 // save clicked tile
                 selectedTile = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X, Mouse.GetState().Y));
                 // draw light state
-                landscape.drawLightState(selectedTile);
+                //landscape.drawLightState(selectedTile, selectedTile.state.country.color);
+                // draw country
+                landscape.drawCountry(selectedTile);
             }
 
             // move map
@@ -178,8 +180,8 @@ namespace BoardMap
 
 
 
-            // Tile tile with most textures
-            // draw number
+            // print selectedTile
+            // draw texture.Count
             spriteBatch.DrawString(onlyFont, "Count: " + selectedTile.textures.Count.ToString(), new Vector2(logPosition.X + 15, 130), Color.Black);
             // print tile
             printTileInfo(new Point(logPosition.X, logPosition.Y + 150), selectedTile);
@@ -190,10 +192,10 @@ namespace BoardMap
 
             // draw fpsCounter
             fpsCounter.Update(gameTime.ElapsedGameTime.TotalSeconds);
-            spriteBatch.DrawString(onlyFont, fpsCounter.framerate.ToString("F"), new Vector2(1920 - 50, 15), Color.Black);
+            spriteBatch.DrawString(onlyFont, "FPS: " + fpsCounter.framerate.ToString("F"), new Vector2(1920 - 100, 15), Color.Black);
 
             // draw number of loaded tiles
-            spriteBatch.DrawString(onlyFont, landscape.tiles.Count.ToString(), new Vector2(1920 - 50, 45), Color.Black);
+            spriteBatch.DrawString(onlyFont, "Tiles: " + landscape.tiles.Count.ToString(), new Vector2(1920 - 100, 45), Color.Black);
 
             // draw currentZoom
             spriteBatch.DrawString(onlyFont, $"Zoom: {frame.currentZoom.ToString()}", new Vector2(1920 - 100, 75), Color.Black);

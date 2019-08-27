@@ -64,8 +64,12 @@ namespace BoardMap.LandscapeNS
                     if (definitions[i].isLand) {
                         // make color less blue
                         Color stateColor = definitions[i].state.color;
-                        stateColor.R += stateColor.B;
-                        stateColor.B -= stateColor.B;
+                        // calc blue fraction as 1/4
+                        byte blueFraction = (byte)(stateColor.B / 4);
+                        // add to R and G and take from B
+                        stateColor.R += blueFraction;
+                        stateColor.G += blueFraction;
+                        stateColor.B -= blueFraction;
                         if(stateColor.B < 0) {
                             stateColor.B = 0;
                         }
@@ -139,7 +143,7 @@ namespace BoardMap.LandscapeNS
             // else return
         }
 
-        public void drawLightState(Tile _tile) {
+        public void drawLightState(Tile _tile, Color _color) {
             // get state
             State lighttState = _tile.state;
 
@@ -148,9 +152,9 @@ namespace BoardMap.LandscapeNS
                 // get color and make lighter
                 // set to fraction of distance to 255 from lightState.color
                 Color lightColor = new Color(
-                    255 - (255 - lighttState.color.R) * 2 / 3,
-                    255 - (255 - lighttState.color.G) * 2 / 3,
-                    255 - (255 - lighttState.color.B) * 2 / 3);
+                    255 - (255 - _color.R) * 4 / 5,
+                    255 - (255 - _color.G) * 4 / 5,
+                    255 - (255 - _color.B) * 4 / 5);
 
                 // get data from frame once
                 ColorData<Color> currentTexture = Tile.frameReference.colorData.getCopy();
@@ -159,12 +163,48 @@ namespace BoardMap.LandscapeNS
                     lighttState.tiles[i].drawTile(lightColor, currentTexture);
                 }
                 // redraw selected tile with state color
-                _tile.drawTile(_tile.state.color, currentTexture);
+                _tile.drawTile(_color, currentTexture);
                 // update texture
                 Tile.frameReference.updateTexture(currentTexture);
             }
 
         }
+
+        public void drawCountry(Tile _tile) {
+            // get state
+            State _state = _tile.state;
+
+            // if null is ocean probably
+            if (_state != null) {
+                // get country color
+                Color color = _tile.state.country.color;
+                // get data from frame once
+                ColorData<Color> currentTexture = Tile.frameReference.colorData.getCopy();
+
+                // loop through states in country
+                for(int state_count = 0; state_count < _tile.state.country.states.Count; state_count++) {
+                    // draw each tile in state with 
+                    State currentState = _state.country.states[state_count];
+                    for (int i = 0; i < currentState.tiles.Length; i++) {
+                        currentState.tiles[i].drawTile(color, currentTexture);
+                    }
+
+                }
+
+                // redraw selected tile's state
+                // draw lighter
+                color = new Color(
+                    255 - (255 - color.R) * 4 / 5,
+                    255 - (255 - color.G) * 4 / 5,
+                    255 - (255 - color.B) * 4 / 5);
+                for (int i = 0; i < _state.tiles.Length; i++) {
+                    _state.tiles[i].drawTile(color, currentTexture);
+                }
+                // update texture
+                Tile.frameReference.updateTexture(currentTexture);
+            }
+        }
+
 
         public Tile searchTile(int _id) {
             return definitions[_id];

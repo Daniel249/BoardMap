@@ -49,6 +49,9 @@ namespace BoardMap.Graphics
             //texture.GetData<Color>(data);
         }
 
+        public ColorData<T> getCopy() {
+            return new ColorData<T>( (T[])Data.Clone(), Width, Height);
+        }
 
         // constructor	
         public ColorData(T[] _data, int _width, int _height) {

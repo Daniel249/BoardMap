@@ -71,7 +71,7 @@ namespace BoardMap.LandscapeNS
                         byte blueFraction = (byte)(stateColor.B / 4);
                         // add to R and G and take from B
                         stateColor.R += blueFraction;
-                        stateColor.G += blueFraction;
+                        stateColor.G -= blueFraction;
                         stateColor.B -= blueFraction;
                         if(stateColor.B < 0) {
                             stateColor.B = 0;

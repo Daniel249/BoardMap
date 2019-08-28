@@ -58,14 +58,13 @@ namespace BoardMap.Externals
             }
 
             // read countries folder
-            readCountries(countriesDict.Values.ToArray());
+            readCountriesFolder(countriesDict.Values.ToArray());
 
             return countriesDict;
-
         }
 
         // foreach Country read countries/Country.txt
-        public void readCountries(Country[] countries) {
+        public void readCountriesFolder(Country[] countries) {
             for(int i = 0; i < countries.Length; i++) {
                 // get country
                 Country currentCountry = countries[i];

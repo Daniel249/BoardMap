@@ -20,6 +20,9 @@ namespace BoardMap.LandscapeNS
         // 3 letter tag
         public string Tag { get; private set; }
 
+        // population added at construction
+        public int population { get; private set; }
+
         // capital tile
         Tile capital;
         // probably City capital evtl !!
@@ -33,11 +36,14 @@ namespace BoardMap.LandscapeNS
 
         // add state to states
         public void addState(State _state) {
+            population = population + _state.population;
             states.Add(_state);
         }
 
+
         // constructor
         public Country(string _name, string _tag) {
+            population = 0;
             Name = _name;
             Tag = _tag;
             states = new List<State>();

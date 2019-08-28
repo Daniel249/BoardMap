@@ -120,7 +120,7 @@ namespace BoardMap.Graphics
         // get window size and move frame relative to the screen
         // reads static mouse and keyboard
         int cameraSpeed = 10;
-        int margin = 300;
+        int margin = 200;
         public void shiftMap(int width, int height) {
             // camera speed
             // distance from edge to trigger movement
@@ -191,8 +191,8 @@ namespace BoardMap.Graphics
         float minZoom = 20;
         float maxZoom = 200;
         public void checkZoom(MouseState lastState) {
-            // check mouse wheel
-            if (Mouse.GetState().ScrollWheelValue < lastState.ScrollWheelValue) {
+            // check mouse wheel and + and - in keyboard 
+            if (Mouse.GetState().ScrollWheelValue < lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Subtract)) {
 
                 // zoom out
                 // check if changed direction
@@ -209,7 +209,7 @@ namespace BoardMap.Graphics
                 if (targetZoom < minZoom) {
                     targetZoom = minZoom;
                 } 
-            } else if(Mouse.GetState().ScrollWheelValue > lastState.ScrollWheelValue) {
+            } else if(Mouse.GetState().ScrollWheelValue > lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Add)) {
 
                 // zoom in
                 // check change direction

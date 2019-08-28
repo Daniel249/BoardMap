@@ -455,7 +455,7 @@
     <Content Include="Content\states\167-Valencia.txt" />
     <Content Include="Content\states\168-Murcia.txt" />
     <Content Include="Content\states\169-Andalusia.txt" />
-    <Content Include="Content\states\17-Alcase Lorraine.txt" />
+    <Content Include="Content\states\17-Lorraine.txt" />
     <Content Include="Content\states\170-Extremadura.txt" />
     <Content Include="Content\states\171-Galicia.txt" />
     <Content Include="Content\states\172-Navarre.txt" />
@@ -577,7 +577,7 @@
     <Content Include="Content\states\277-Mexico.txt" />
     <Content Include="Content\states\278-Argentina.txt" />
     <Content Include="Content\states\279-Chile.txt" />
-    <Content Include="Content\states\28-Alcase.txt" />
+    <Content Include="Content\states\28-Alsace.txt" />
     <Content Include="Content\states\280-Brazil.txt" />
     <Content Include="Content\states\281-India.txt" />
     <Content Include="Content\states\282-Japan.txt" />
@@ -1032,7 +1032,7 @@
     <Content Include="Content\states\687-British Guyana.txt" />
     <Content Include="Content\states\688-Chaco Boreal.txt" />
     <Content Include="Content\states\689-Jamaica.txt" />
-    <Content Include="Content\states\69-Sudatenland.txt" />
+    <Content Include="Content\states\69-Sudetenland.txt" />
     <Content Include="Content\states\690-Bahama Islands.txt" />
     <Content Include="Content\states\691-Trinidad.txt" />
     <Content Include="Content\states\692-Windward Islands.txt" />
@@ -1088,7 +1088,7 @@
     <Content Include="Content\states\737-New Britain.txt" />
     <Content Include="Content\states\738-Aru Islands.txt" />
     <Content Include="Content\states\739-Haida Gwaii.txt" />
-    <Content Include="Content\states\74-East Sudatenland.txt" />
+    <Content Include="Content\states\74-East Sudetenland.txt" />
     <Content Include="Content\states\740-Vancouver Island.txt" />
     <Content Include="Content\states\741-Cambodia.txt" />
     <Content Include="Content\states\742-Stalinabad.txt" />

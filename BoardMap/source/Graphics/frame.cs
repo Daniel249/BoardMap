@@ -57,34 +57,9 @@ namespace BoardMap.Graphics
             // bind to screen
             pos_x = pos_x % 1920;
 
-            // calc mod
-            //int mod = (int)(mapTexture.Width * 100 / currentZoom);
-            // make positive
-            //pos_x = (int)(pos_x + (colorData.Width * mod) % colorData.Width * 100 / currentZoom);
-
-            /*
-            // move pos_x frames to the left
-            while (zoomSize.X + Position.X < pos_x) {
-                pos_x -= zoomSize.X;
-            }
-            // move pos_x frames to the right
-            while(Position.X > pos_x) {
-                pos_x += zoomSize.X;
-            }
-            */
-
-            // get location click without zoom
-            /* Point comparePoint = new Point (
-                 (pos_x - Position.X) * 100 / (int)currentZoom, 
-                 (pos_y - Position.Y) * 100 / (int)currentZoom); */
-
+            // estimate location in map relative to map position. apply zoom after
             float search_x = (float)(pos_x - Position.X) * 100 / currentZoom;
             float search_y = (float)(pos_y - Position.Y) * 100 / currentZoom;
-
-
-            // apply zoom
-            //int loc_x = (int)(pos_x * 100/currentZoom);
-            //int loc_y = (int)(pos_y * 100/currentZoom);
 
             return ogData.get((int)search_x, (int)search_y);
         }
@@ -183,12 +158,9 @@ namespace BoardMap.Graphics
         float minZoom = 10;
         float maxZoom = 500;
         public void checkZoom(MouseState lastState) {
-            //update zoomSize 
-            zoomSize = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
-
+            
             // check mouse wheel and + and - in keyboard 
             if (Mouse.GetState().ScrollWheelValue < lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Subtract)) {
-
                 // zoom out
                 // check if changed direction
                 if (targetZoom > currentZoom) {
@@ -203,6 +175,10 @@ namespace BoardMap.Graphics
                 if (targetZoom < minZoom) {
                     targetZoom = minZoom;
                 } 
+                // target zoom bound to currentZoom
+                if (currentZoom - targetZoom > currentZoom / 10) {
+                    targetZoom = currentZoom * 9f / 10f;
+                }
             } else if(Mouse.GetState().ScrollWheelValue > lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Add)) {
 
                 // zoom in
@@ -217,10 +193,40 @@ namespace BoardMap.Graphics
                 if (targetZoom > maxZoom) {
                     targetZoom = maxZoom;
                 }
+                // target zoom bound to currentZoom
+                if (targetZoom - currentZoom > currentZoom / 10) {
+                    targetZoom = currentZoom * 11f / 10f;
+                }
             }
 
-            // zoom towards target
+            // before applying zoom
+            // estimate location in map relative to map position. apply zoom after
+            float search_x = (float)(Mouse.GetState().X - Position.X) * 100 / currentZoom;
+            float search_y = (float)(Mouse.GetState().Y - Position.Y) * 100 / currentZoom;
+            if (search_x < 0) {
+                search_x = 0;
+            } else if (search_x > mapTexture.Width) {
+                search_x = mapTexture.Width;
+            }
+            if (search_y < 0) {
+                search_y = 0;
+            } else if (search_y > mapTexture.Height) {
+                search_y = mapTexture.Height;
+            }
+
+            // store currentZoom
+            float lastZoom = currentZoom;
+            // apply zoom towards target
             currentZoom += (targetZoom - currentZoom) / 10;
+
+            int rel_x = (int)((lastZoom - currentZoom)*search_x/100);
+            int rel_y = (int)((lastZoom - currentZoom) * search_y / 100);
+            // translate position to keep mouse on center
+            Position.X += rel_x;
+            Position.Y += rel_y;
+
+            //update zoomSize 
+            zoomSize = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
         }
 
         // get blank canvas

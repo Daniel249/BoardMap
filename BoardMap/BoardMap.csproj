@@ -76,6 +76,7 @@
     <Compile Include="source\Externals\loader.cs" />
     <Compile Include="source\Externals\statereader.cs" />
     <Compile Include="source\Graphics\colordata.cs" />
+    <Compile Include="source\Interface\guinterface.cs" />
     <Compile Include="source\Landscape\continent.cs" />
     <Compile Include="source\Landscape\country.cs" />
     <Compile Include="source\Graphics\frame.cs" />
@@ -1165,9 +1166,7 @@
     <Content Include="Content\states\98-Mazurskie.txt" />
     <Content Include="Content\states\99-Jutland.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="source\Interface\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -30,8 +30,7 @@ namespace BoardMap.Graphics
         Point zoomSize;
         // use spriteBatch to draw frame 
         public void Draw(SpriteBatch spriteBatch) {
-            // update frame zoom size
-            zoomSize = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
+            // = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
 
             // init relative position one frame outside to the left of screen
             int relativePosition = Position.X;
@@ -41,7 +40,7 @@ namespace BoardMap.Graphics
 
             // draw while still empty in screen
             while(relativePosition < 1920) {
-                // print afterimage at appropriate location to fill currentcheck
+                // print
                 spriteBatch.Draw(mapTexture, new Rectangle(new Point(relativePosition, Position.Y), zoomSize), Color.White);
                 // move check to next modulo zoomsize width
                 relativePosition += zoomSize.X;
@@ -63,6 +62,7 @@ namespace BoardMap.Graphics
             // make positive
             //pos_x = (int)(pos_x + (colorData.Width * mod) % colorData.Width * 100 / currentZoom);
 
+            /*
             // move pos_x frames to the left
             while (zoomSize.X + Position.X < pos_x) {
                 pos_x -= zoomSize.X;
@@ -71,21 +71,22 @@ namespace BoardMap.Graphics
             while(Position.X > pos_x) {
                 pos_x += zoomSize.X;
             }
+            */
 
             // get location click without zoom
             /* Point comparePoint = new Point (
                  (pos_x - Position.X) * 100 / (int)currentZoom, 
                  (pos_y - Position.Y) * 100 / (int)currentZoom); */
 
-            pos_x = (pos_x - Position.X) * 100 / (int)currentZoom;
-            pos_y = (pos_y - Position.Y) * 100 / (int)currentZoom;
+            float search_x = (float)(pos_x - Position.X) * 100 / currentZoom;
+            float search_y = (float)(pos_y - Position.Y) * 100 / currentZoom;
 
 
             // apply zoom
             //int loc_x = (int)(pos_x * 100/currentZoom);
             //int loc_y = (int)(pos_y * 100/currentZoom);
 
-            return ogData.get(pos_x, pos_y);
+            return ogData.get((int)search_x, (int)search_y);
         }
 
         // update mapTexture with colorData
@@ -119,10 +120,10 @@ namespace BoardMap.Graphics
     
         // get window size and move frame relative to the screen
         // reads static mouse and keyboard
-        int cameraSpeed = 10;
-        int margin = 200;
+        // camera speed
+        int cameraSpeed = 15;
+        int margin = 100;
         public void shiftMap(int width, int height) {
-            // camera speed
             // distance from edge to trigger movement
 
             // check left or right, and up or down
@@ -139,48 +140,39 @@ namespace BoardMap.Graphics
             if (Keyboard.GetState().IsKeyDown(Keys.Up) || Mouse.GetState().Y < margin ) {                       // check up
                 if (Position.Y < 0) {
                     Position.Y += cameraSpeed;
+                    // bind to 0 coming from less than 0
+                    if (Position.Y > 0) {
+                        Position.Y = 0;
+                    }
                 }
             } else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Mouse.GetState().Y > height - margin) {      // check down
-                if (zoomSize.Y > height) {
+                if (Position.Y + zoomSize.Y > height) {
                     Position.Y -= cameraSpeed;
-                }
-            }
-
-            // stop from going out of bound during rapid zoom
-
-            // relocate frame
-
-            // relative to zoomSize
-            /*
-            Position.X = Position.X % (int)(mapTexture.Width * currentZoom / 100);
-            if((int)(mapTexture.Width * currentZoom / 100) < 1920) {
-                // if zoomSize smaller than screen always positive
-                if (Position.X < 0) {
-                    Position.X += (int)(mapTexture.Width * currentZoom / 100);
-                }
-            } else {
-                // if zoomSize smaller than screen always negative
-                if (Position.X < 0) {
-                    Position.X -= (int)(mapTexture.Width * currentZoom / 100);
-                }
-            }*/
-
-            // avoid go below map if Position.Y < 0 (still map not shown above)
-            if (Position.Y + zoomSize.Y < height) {
-                if (Position.Y < 0) {
-                    if (height - zoomSize.Y <= 0) {
+                    // bind to height coming from more than height
+                    if (Position.Y + zoomSize.Y < height) {
                         Position.Y = height - zoomSize.Y;
                     }
                 }
             }
 
-            // bound to range 0 - zoomSize.width
-            if (Position.X < 0) {
-                Position.X += zoomSize.X;
-            } else if(Position.X > zoomSize.X) {
-                Position.X -= zoomSize.X;
+            // try to keep map at he top after it gets smaller than screen
+            if (Position.Y + zoomSize.Y < height) {
+                if (Position.Y < 0) {
+                    //if (height - zoomSize.Y <= 0) {
+                        Position.Y = height - zoomSize.Y;
+                    //}
+                }
             }
 
+            // relocate map modulo mapSize to keep it around the mouse
+            // for zooming into mouse
+            // has no effect on printing 
+            while (Position.X < Mouse.GetState().X) {
+                Position.X += zoomSize.X;
+            }
+            if (Position.X > Mouse.GetState().X) {
+                Position.X -= zoomSize.X;
+            }
 
         }
 
@@ -188,9 +180,12 @@ namespace BoardMap.Graphics
         float targetZoom = 100;
         public float currentZoom = 100;
         float zoomSensitivity = 10;
-        float minZoom = 20;
-        float maxZoom = 200;
+        float minZoom = 10;
+        float maxZoom = 500;
         public void checkZoom(MouseState lastState) {
+            //update zoomSize 
+            zoomSize = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
+
             // check mouse wheel and + and - in keyboard 
             if (Mouse.GetState().ScrollWheelValue < lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Subtract)) {
 
@@ -199,8 +194,7 @@ namespace BoardMap.Graphics
                 if (targetZoom > currentZoom) {
                     // reset
                     targetZoom = currentZoom;
-                }
-                else {
+                } else {
                     // slow down
                     targetZoom += (currentZoom - targetZoom) / 1000;
                 }
@@ -227,13 +221,13 @@ namespace BoardMap.Graphics
 
             // zoom towards target
             currentZoom += (targetZoom - currentZoom) / 10;
-
         }
 
         // get blank canvas
         public ColorData<Color> getBlankCanvas() {
             return new ColorData<Color>(colorData.Width, colorData.Height);
         }
+
 
         // constructor
         public Frame(Texture2D _texture, Point _position, SpriteBatch _spriteBatch) {
@@ -248,7 +242,7 @@ namespace BoardMap.Graphics
             colorData = new ColorData<Color>(_colorData, _texture.Width, _texture.Height);
             // also save ogData
             ogData = colorData.getCopy();
-
+            // init zoom to size*1
             zoomSize = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
         }
     }

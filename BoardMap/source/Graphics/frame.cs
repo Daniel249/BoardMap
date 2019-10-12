@@ -136,6 +136,8 @@ namespace BoardMap.Graphics
                     //if (height - zoomSize.Y <= 0) {
                         Position.Y = height - zoomSize.Y;
                     //}
+                } else {
+                    // Position.Y = 0;
                 }
             }
 
@@ -170,14 +172,15 @@ namespace BoardMap.Graphics
                     // slow down
                     targetZoom += (currentZoom - targetZoom) / 1000;
                 }
-                // apply zoom
-                targetZoom -= zoomSensitivity;
+                // apply zoom proportional to currentZoom
+                // zoom currently at 10 in - 500 out 
+                targetZoom -= zoomSensitivity * currentZoom / 100;
                 if (targetZoom < minZoom) {
                     targetZoom = minZoom;
                 } 
                 // target zoom bound to currentZoom
                 if (currentZoom - targetZoom > currentZoom / 10) {
-                    targetZoom = currentZoom * 9f / 10f;
+                    //targetZoom = currentZoom * 9f / 10f;
                 }
             } else if(Mouse.GetState().ScrollWheelValue > lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Add)) {
 
@@ -189,16 +192,18 @@ namespace BoardMap.Graphics
                     targetZoom += (currentZoom - targetZoom) / 1000;
                 }
                 // apply zoom
-                targetZoom += zoomSensitivity;
+                targetZoom += zoomSensitivity * currentZoom / 100;
                 if (targetZoom > maxZoom) {
                     targetZoom = maxZoom;
                 }
                 // target zoom bound to currentZoom
-                if (targetZoom - currentZoom > currentZoom / 10) {
-                    targetZoom = currentZoom * 11f / 10f;
+                if (targetZoom > currentZoom * 11f / 10) {
+                    //targetZoom = currentZoom * 11f / 10f;
                 }
             }
 
+
+            /*
             // before applying zoom
             // estimate location in map relative to map position. apply zoom after
             float search_x = (float)(Mouse.GetState().X - Position.X) * 100 / currentZoom;
@@ -212,16 +217,20 @@ namespace BoardMap.Graphics
                 search_y = 0;
             } else if (search_y > mapTexture.Height) {
                 search_y = mapTexture.Height;
-            }
+            } */
 
             // store currentZoom
             float lastZoom = currentZoom;
             // apply zoom towards target
             currentZoom += (targetZoom - currentZoom) / 10;
 
-            int rel_x = (int)((lastZoom - currentZoom)*search_x/100);
-            int rel_y = (int)((lastZoom - currentZoom) * search_y / 100);
-            // translate position to keep mouse on center
+            // calculate corrections to maintain mouse static 
+            // mouse location is currently calculalted like this in getColorFrom
+            // float search_x = (float)(pos_x - Position.X) * 100 / currentZoom;
+            // float search_y = (float)(pos_y - Position.Y) * 100 / currentZoom;
+            int rel_x = (int)((lastZoom - currentZoom) * (Mouse.GetState().X - Position.X) / lastZoom);
+            int rel_y = (int)((lastZoom - currentZoom) * (Mouse.GetState().Y - Position.Y) / lastZoom);
+            // translate position to keep mouse static
             Position.X += rel_x;
             Position.Y += rel_y;
 

@@ -130,14 +130,46 @@ namespace BoardMap.Graphics
                 }
             }
 
-            // try to keep map at he top after it gets smaller than screen
-            if (Position.Y + zoomSize.Y < height) {
-                if (Position.Y < 0) {
-                    //if (height - zoomSize.Y <= 0) {
+            // map bound to screen through 
+
+            // if map bigger than screen and implicit zoom out
+            if (zoomSize.Y > height) {
+
+                // if room above
+                if (Position.Y > 0) {
+                    // and map goes below screen
+                    if (Position.Y + zoomSize.Y > height) {
+                        // remove room above/blank space
+                        Position.Y = 0;
+                    }
+                } 
+                // if room below
+                 else if (Position.Y + zoomSize.Y < height) {
+                    // and map goes above screen
+                    if (Position.Y < 0) {
+                        // remove room below
                         Position.Y = height - zoomSize.Y;
-                    //}
-                } else {
-                    // Position.Y = 0;
+                    }
+                }
+            }
+            // if map smaller than screen and implicit zoom in
+             else if (zoomSize.Y < height) { 
+
+                // if map goes above screen
+                if (Position.Y < 0) {
+                    // and room below map
+                    if (Position.Y + zoomSize.Y < height) {
+                        // remove going above screen
+                        Position.Y = 0;
+                    }
+                } 
+                // if map goes below screen
+                else if (Position.Y + zoomSize.Y > height) {
+                    // and room above map
+                    if (Position.Y > 0) {
+                        // remove going below screen
+                        Position.Y = height - zoomSize.Y;
+                    }
                 }
             }
 
@@ -175,13 +207,7 @@ namespace BoardMap.Graphics
                 // apply zoom proportional to currentZoom
                 // zoom currently at 10 in - 500 out 
                 targetZoom -= zoomSensitivity * currentZoom / 100;
-                if (targetZoom < minZoom) {
-                    targetZoom = minZoom;
-                } 
-                // target zoom bound to currentZoom
-                if (currentZoom - targetZoom > currentZoom / 10) {
-                    //targetZoom = currentZoom * 9f / 10f;
-                }
+
             } else if(Mouse.GetState().ScrollWheelValue > lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Add)) {
 
                 // zoom in
@@ -193,15 +219,15 @@ namespace BoardMap.Graphics
                 }
                 // apply zoom
                 targetZoom += zoomSensitivity * currentZoom / 100;
-                if (targetZoom > maxZoom) {
-                    targetZoom = maxZoom;
-                }
-                // target zoom bound to currentZoom
-                if (targetZoom > currentZoom * 11f / 10) {
-                    //targetZoom = currentZoom * 11f / 10f;
-                }
+
             }
 
+            // bound to minZoom - maxZoom
+            if (targetZoom > maxZoom) {
+                targetZoom = maxZoom;
+            } else if (targetZoom < minZoom) {
+                targetZoom = minZoom;
+            }
 
             /*
             // before applying zoom
@@ -228,13 +254,26 @@ namespace BoardMap.Graphics
             // mouse location is currently calculalted like this in getColorFrom
             // float search_x = (float)(pos_x - Position.X) * 100 / currentZoom;
             // float search_y = (float)(pos_y - Position.Y) * 100 / currentZoom;
-            int rel_x = (int)((lastZoom - currentZoom) * (Mouse.GetState().X - Position.X) / lastZoom);
-            int rel_y = (int)((lastZoom - currentZoom) * (Mouse.GetState().Y - Position.Y) / lastZoom);
+            
+            int mouseX = Mouse.GetState().X;
+            int mouseY = Mouse.GetState().Y;
+            /*
+            // bound Y to map height relative to position. as to not zoom into nothing
+            if (mouseY > Position.Y) {
+                mouseY = Position.Y;
+            } else if (mouseY > Position.Y + mapTexture.Height) {
+                mouseY = Position.Y + mapTexture.Height;
+            } */
+            // do calculations
+            int rel_x = (int)((lastZoom - currentZoom) * (mouseX - Position.X) / lastZoom);
+            int rel_y = (int)((lastZoom - currentZoom) * (mouseY - Position.Y) / lastZoom);
             // translate position to keep mouse static
             Position.X += rel_x;
             Position.Y += rel_y;
 
-            //update zoomSize 
+            
+
+            //update zoomSize for next drawing
             zoomSize = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
         }
 

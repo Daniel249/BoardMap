@@ -8,6 +8,7 @@ using BoardMap.LandscapeNS;
 using System.Globalization;
 using System;
 using BoardMap.Interface;
+using BoardMap.Economy;
 
 namespace BoardMap
 {
@@ -96,7 +97,19 @@ namespace BoardMap
             landscape = new Landscape(onlyTexture);
             // get first tile
             selectedTile = landscape.searchTile(1);
+
+            // init german economy as test
+            germany = landscape.searchCountry("GER");
+            // init grain and cotton firm in all states
+            for(int i = 0; i < germany.states.Count; i++) {
+                // state ref
+                State currentState = germany.states[i];
+                // add grain and cotton firms
+                new Firm(1, currentState.population.Size / 2, currentState.population, currentState);
+                new Firm(2, currentState.population.Size / 2, currentState.population, currentState);
+            }
         }
+        Country germany;
         
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -131,9 +144,24 @@ namespace BoardMap
             // mouse
             frame.checkZoom(lastMouse);
             lastMouse = Mouse.GetState();
+
+            // run economy every half second
+            if(timer > TimeSpan.Zero) {
+                // pass time from last update
+                timer -= gameTime.ElapsedGameTime;
+                // check if timer ran out
+                if(timer <= TimeSpan.Zero) {
+                    // run economy
+                    germany.runEconomy();
+                    // set timer to t - half second
+                    timer = new TimeSpan(0, 0, 0, 0, 500);
+                }
+
+            }
                         
             base.Update(gameTime);
         }
+        TimeSpan timer = new TimeSpan(0, 0, 3);
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -160,7 +188,7 @@ namespace BoardMap
             // Right Corner
 
             // draw fpsCounter
-            fpsCounter.Update(gameTime.ElapsedGameTime.TotalSeconds);
+            fpsCounter.Update(timeSinceLastFrame: gameTime.ElapsedGameTime.TotalSeconds);
             spriteBatch.DrawString(onlyFont, "FPS: " + fpsCounter.framerate.ToString("F"), new Vector2(1920 - 100, 15), Color.Black);
 
             // draw number of loaded tiles

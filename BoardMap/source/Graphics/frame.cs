@@ -271,8 +271,6 @@ namespace BoardMap.Graphics
             Position.X += rel_x;
             Position.Y += rel_y;
 
-            
-
             //update zoomSize for next drawing
             zoomSize = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
         }

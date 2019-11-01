@@ -72,6 +72,12 @@
   <ItemGroup>
     <Compile Include="source\BoardmapApp.cs" />
     <Compile Include="source\Common\framerate.cs" />
+    <Compile Include="source\Economy\market.cs" />
+    <Compile Include="source\Economy\firm.cs" />
+    <Compile Include="source\Economy\goods.cs" />
+    <Compile Include="source\Economy\marketplace.cs" />
+    <Compile Include="source\Economy\population.cs" />
+    <Compile Include="source\Economy\tuple.cs" />
     <Compile Include="source\Externals\landreader.cs" />
     <Compile Include="source\Externals\loader.cs" />
     <Compile Include="source\Externals\statereader.cs" />

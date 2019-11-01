@@ -126,7 +126,8 @@ namespace BoardMap.Interface
             spriteBatch.DrawString(onlyFont, "#: " + state.tiles.Length.ToString(), new Vector2(_position.X + 20, _position.Y + 20), Color.Black);
 
             // print population
-            spriteBatch.DrawString(onlyFont, String.Format("{0:### ### ### ###}", state.population),
+            spriteBatch.DrawString(onlyFont, 
+                String.Format("{0:### ### ### ###}", state.population.Size),
                 new Vector2(_position.X + secondRow, _position.Y + 20), Color.Black);
 
             // looks like this

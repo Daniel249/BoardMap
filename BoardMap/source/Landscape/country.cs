@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BoardMap.Economy;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,16 +31,26 @@ namespace BoardMap.LandscapeNS
         // references to states
         public List<State> states { get; private set; }
 
+        // domestic marketplace
+        public MarketPlace marketPlace { get; private set; }
+
         public void setColor(int r, int g, int b) {
             color = new Color(r, g, b);
         }
 
         // add state to states
         public void addState(State _state) {
-            population = population + _state.population;
+            population = population + _state.population.Size;
             states.Add(_state);
         }
 
+        // mein economy method
+        public void runEconomy() {
+            for(int i = 0; i < states.Count; i++) {
+                states[i].population.makeOrder();
+            }
+            marketPlace.solveMarkets();
+        }
 
         // constructor
         public Country(string _name, string _tag) {
@@ -47,6 +58,7 @@ namespace BoardMap.LandscapeNS
             Name = _name;
             Tag = _tag;
             states = new List<State>();
+            marketPlace = new MarketPlace();
         }
 
     }

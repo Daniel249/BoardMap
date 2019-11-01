@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BoardMap.Economy;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace BoardMap.LandscapeNS
         public Color color { get; private set; }
 
         // population size
-        public int population { get; private set; }
+        public Population population { get; private set; }
 
         // references to tiles
         public Tile[] tiles { get; private set; }
@@ -36,15 +37,19 @@ namespace BoardMap.LandscapeNS
             }
         }
 
+        // state's firms
+        List<Firm> stateEconomy;
+
         // constructor
         public State(int _id, int _manpower, Tile[] _tiles, string _name, Country _country, Color _color) {
             ID = _id;
-            population = _manpower;
             tiles = _tiles;
             color = _color;
             country = _country;
-            country.addState(this);
             Name = _name;
+            stateEconomy = new List<Firm>();
+            population = new Population(_manpower, 2000, 2000, this);
+            country.addState(this);
         }
     }
 }

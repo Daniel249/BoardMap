@@ -209,7 +209,7 @@ namespace BoardMap.LandscapeNS
 
         // init  and assign continents
         void initContinents() {
-            continents = new Continent[8] {
+            continents = new Continent[] {
                 new Continent(0, "Oceans", waterColor),
                 new Continent(1, "Europe", new Color(0, 51, 153)),
                 new Continent(2, "North America", Color.Green),

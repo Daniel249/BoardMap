@@ -43,18 +43,18 @@ namespace BoardMap.Interface
             // print current tile hover
             printTileInfo(new Point(logPosition.X, logPosition.Y + 30), tileHover);
 
-
-            // print country
-            printCountryInfo(new Point(logPosition.X, logPosition.Y + 120), selectedTile);
-
-            // print selected state
-            printStateInfo(new Point(logPosition.X, logPosition.Y + 170), selectedTile);
-
             // print selectedTile
-            printTileInfo(new Point(logPosition.X, logPosition.Y + 220), selectedTile);
+            printTileInfo(new Point(logPosition.X, logPosition.Y + 120), selectedTile);
             // draw its texture count also
             spriteBatch.DrawString(onlyFont, "Count: " + selectedTile.textures.Count.ToString(),
-                new Vector2(logPosition.X + 15, logPosition.Y + 290), Color.Black);
+                new Vector2(logPosition.X + 15, logPosition.Y + 190), Color.Black);
+
+            // print country
+            printCountryInfo(new Point(logPosition.X, logPosition.Y + 220), selectedTile);
+
+            // print selected state
+            printStateInfo(new Point(logPosition.X, logPosition.Y + 300), selectedTile);
+
         }
 
 
@@ -63,7 +63,7 @@ namespace BoardMap.Interface
 
         // variable for all print methods
         // position second row of ui for rgb
-        int secondRow = 95;
+        int secondRow = 110;
 
         // print country info
         void printCountryInfo(Point _position, Tile _tile) {
@@ -127,13 +127,38 @@ namespace BoardMap.Interface
 
             // print population
             spriteBatch.DrawString(onlyFont, 
-                String.Format("{0:### ### ### ###}", state.population.Size),
-                new Vector2(_position.X + secondRow, _position.Y + 20), Color.Black);
+                "Pop: " + String.Format("{0:### ### ### ###}", state.population.Size),
+                new Vector2(_position.X + 20, _position.Y + 40), Color.Black);
+
+            // print wage
+            spriteBatch.DrawString(onlyFont, "wage: " + string.Format("{0:0.00}", 
+                state.population.wageIdeal), 
+                new Vector2(_position.X + 20, _position.Y + 60), Color.Black);
+
+            // print unemployment
+            spriteBatch.DrawString(onlyFont, "unemp: " + string.Format("{0:### ### ### ###}", 
+                state.population.unemployment), 
+                new Vector2(_position.X + secondRow, _position.Y + 60), Color.Black);
+
+            // print gdp
+            spriteBatch.DrawString(onlyFont, "GDP: " + string.Format("{0:### ### ### ###}", 
+                state.grossProduct),
+                new Vector2(_position.X + 20, _position.Y + 80), Color.Black);
+
+            // print gdp per capita
+            spriteBatch.DrawString(onlyFont, "perCap: " + string.Format("{0:### ###}",
+                state.grossProduct / state.population.Size),
+                new Vector2(_position.X + 20, _position.Y + 100), Color.Black);
 
             // looks like this
 
             //  []  ID      Name
-            //      #tile   Pop
+            //      #tile   
+            //      Pop_     
+            //      wage_   unemp_
+            //      GDP_
+            //      percap_
+
         }
 
         // print tile info
@@ -169,7 +194,7 @@ namespace BoardMap.Interface
         public UInterface(Texture2D _whiteDot, SpriteFont _font, SpriteBatch _spriteBatch) {
             // init log
             logPosition = new Point(0, 0);
-            logSize = new Point(220, 330);
+            logSize = new Point(250, 500);
             logColor = Color.White;
             whiteRectangle = _whiteDot;
             whiteRectangle.SetData(new[] { Color.White });

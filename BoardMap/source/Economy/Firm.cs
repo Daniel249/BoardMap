@@ -19,35 +19,68 @@ namespace BoardMap.Economy
         // ideal number of workers
         public int workerNumIdeal { get; private set; }
         // wage of worker pool
-        public int wage { get; private set; }
+        public double wage { get; private set; }
 
         // firm values
         // labor intensivity
-        public int laborIntensity { get; private set; }
+        public double laborIntensity { get; private set; }
         // labor productivity
-        public int laborProductivity { get; private set; }
+        public double laborProductivity { get; private set; }
+
+        // last production for ui
+        public double production { get; private set; }
 
         // reference to state location
-        State stateRef;
+        public State stateRef { get; private set; }
 
         // make admin decisions
         public void Think() {
-            int wage = worker.wageIdeal;
+            // pay old wage
+            // worker.payWage(wage, workerNum);
+            // update wage
+            wage = worker.wageIdeal;
+            // hire workers 
+            workerNum += worker.hireWorkers(workerNumIdeal - workerNum);
         }
-        
+
+        // return production and report value added
+        public double operate(double price) {
+            // calc mc*Ai*ai / wi
+            double klammern = laborProductivity * laborIntensity * price / wage;
+            // calc 1/(1 - ai)
+            double potenz = 1 / (1 - laborIntensity);
+
+            // calc labor first and update workerideal
+            double labor = Math.Pow(klammern, potenz);
+            workerNumIdeal = (int)labor;
+            // calc production
+            production = laborProductivity * Math.Pow(labor, laborIntensity);
+
+            double revenue = production * price;
+            stateRef.grossProduct += (int)revenue;
+
+            return revenue;
+        }
+
         // constructor 
-        public Firm(int prodID, int _workerNum, Population _worker, State _state) {
+        public Firm(int prodID, int _workerNum, State _state) {
             // init
             productionID = prodID;
             stateRef = _state;
+            stateRef.stateEconomy.Add(this);
 
             wage = 0;
-            laborIntensity = 900;
-            laborProductivity = 2000;
+            laborIntensity = 0.7;
+            // if good is food. more tiles = more productivity
+            if (prodID == 1) {
+                laborProductivity = 50 * _state.tiles.Length;
+            } else {
+                laborProductivity = 50;
+            }
 
             workerNum = _workerNum;
             workerNumIdeal = workerNum;
-            worker = _worker;
+            worker = _state.population;
             worker.hireWorkers(_workerNum);
             // add firm to countries' marketplace
             stateRef.country.marketPlace.addFirm(this);

@@ -12,11 +12,11 @@ namespace BoardMap.Economy
         // total population size
         public int Size { get; private set; }
         // cash in hand
-        int Money;
+        double Money;
         // current wage asked to employers
-        public int wageIdeal { get; private set; }
+        public double wageIdeal { get; private set; }
         // absolute unemployment value
-        int unemployment;
+        public int unemployment { get; private set; }
 
         // bundle preferences
         Tuple[] preferences;
@@ -25,13 +25,13 @@ namespace BoardMap.Economy
         MarketPlace marketRef;
 
         // produce goods bundle to demand in market
-        Tuple[] genBundle(int[] lastPrices) {
+        Tuple[] genBundle(double[] lastPrices) {
             // init bundle
             Tuple[] bundle = new Tuple[preferences.Length];
 
             // generate bundle
             // simple as it gets. half money on food and half on cotton
-            int halfMoney = Money / 2;
+            double halfMoney = Money / 2;
             bundle[0] = new Tuple(1, halfMoney);
             bundle[1] = new Tuple(2, halfMoney);
             // substract from money
@@ -48,31 +48,48 @@ namespace BoardMap.Economy
             // make order to marketplace
             marketRef.processOrder(bundle);
 
+
+            payWage(20, Size);
+        }
+        
+        // update wage
+        void updateWage() {
             // increase wage 
             // if unemployment below 5% increase wage 5% else decrease 5%
-            if(unemployment < unemployment * 5 / 100) {
-                wageIdeal += wageIdeal * 5 / 100;
+            if (unemployment == 0) {
+                wageIdeal += 0.05;
             } else {
-                wageIdeal -= wageIdeal * 5 / 100;
+                wageIdeal -= 0.05;
             }
         }
 
         // hire workers from population
         public int hireWorkers(int workerNum) {
             int hiredWorkers = 0;
-            if(unemployment > workerNum) {
+
+            // if not enough workers cap hiring
+            if(unemployment < workerNum) { 
+                hiredWorkers = unemployment;
+                unemployment = 0;
+            } else {
+                // even if negative just substract 
                 unemployment -= workerNum;
                 hiredWorkers = workerNum;
-            } else {
-                hiredWorkers = unemployment;
             }
             return hiredWorkers;
         }
 
+        public void payWage(double _wage, int workerNum) {
+            // Money += _wage * workerNum;
+            Money += 20 * workerNum;
+            updateWage();
+            // Money += _wage;
+        }
+
         // constructor
-        public Population(int _size, int _money, int _wage, State _state) {
+        public Population(int _size, double _wage, State _state) {
             Size = _size;
-            Money = _money;
+            payWage(_wage, Size);
             wageIdeal = _wage;
             unemployment = _size;
             marketRef = _state.country.marketPlace;

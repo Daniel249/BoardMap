@@ -47,6 +47,7 @@ namespace BoardMap.LandscapeNS
         // mein economy method
         public void runEconomy() {
             for(int i = 0; i < states.Count; i++) {
+                states[i].grossProduct = 0;
                 states[i].population.makeOrder();
             }
             marketPlace.solveMarkets();

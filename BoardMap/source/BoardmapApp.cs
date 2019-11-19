@@ -105,8 +105,8 @@ namespace BoardMap
                 // state ref
                 State currentState = germany.states[i];
                 // add grain and cotton firms
-                new Firm(1, currentState.population.Size / 2, currentState.population, currentState);
-                new Firm(2, currentState.population.Size / 2, currentState.population, currentState);
+                new Firm(1, currentState.population.Size / 2, currentState);
+                new Firm(2, currentState.population.Size / 2, currentState);
             }
         }
         Country germany;

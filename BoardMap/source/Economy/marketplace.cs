@@ -11,11 +11,11 @@ namespace BoardMap.Economy
         // individual markets for each good
         Market[] markets;
         // last market prices
-        public int[] lastPrices { get; private set; }
+        public double[] lastPrices { get; private set; }
 
         // loop through and solve all markets
         public void solveMarkets() {
-            for(int id = 1; id < markets.Length; id++) {
+            for(int id = 1; id <= 2; id++) {
                 // resolve current market and store last price for consumers next cycle
                 markets[id].resolveMarket();
                 lastPrices[id] = markets[id].lastPrice;
@@ -27,7 +27,7 @@ namespace BoardMap.Economy
             for(int i = 0; i < bundle.Length; i++) {
                 // get data from tuple
                 int goodID = bundle[i].ID;
-                int goodAmmount = bundle[i].Value;
+                double goodAmmount = bundle[i].Value;
                 // add order to aggregateDemand of respective market
                 markets[goodID].addDemand(goodAmmount);
             }
@@ -44,7 +44,7 @@ namespace BoardMap.Economy
             int goodsNum = Enum.GetNames(typeof(Goods)).Length;
 
             // init marketplace
-            lastPrices = new int[goodsNum];
+            lastPrices = new double[goodsNum];
             markets = new Market[goodsNum];
             for(int id = 0; id < goodsNum; id++) {
                 // init each market

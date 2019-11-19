@@ -28,6 +28,8 @@ namespace BoardMap.LandscapeNS
         // cities in state
         //Polis[]
 
+        public int grossProduct;
+
         // init states in tiles
         public static void initStates(State[] _states) {
             foreach(State _state in _states) {
@@ -38,7 +40,7 @@ namespace BoardMap.LandscapeNS
         }
 
         // state's firms
-        List<Firm> stateEconomy;
+        public List<Firm> stateEconomy;
 
         // constructor
         public State(int _id, int _manpower, Tile[] _tiles, string _name, Country _country, Color _color) {
@@ -48,7 +50,7 @@ namespace BoardMap.LandscapeNS
             country = _country;
             Name = _name;
             stateEconomy = new List<Firm>();
-            population = new Population(_manpower, 2000, 2000, this);
+            population = new Population(_manpower, 20, this);
             country.addState(this);
         }
     }

@@ -28,7 +28,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Game1.cs">
+    <Compile Update="source\BoardmapApp.cs">
       <CopyToOutputDirectory>Do not copyBo</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>

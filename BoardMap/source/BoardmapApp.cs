@@ -20,7 +20,8 @@ namespace BoardMap
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public BoardmapApp() {
+        public BoardmapApp()
+        {
             // init graphics
             graphics = new GraphicsDeviceManager(this)
             {
@@ -29,6 +30,7 @@ namespace BoardMap
                 PreferredBackBufferWidth = 1920,
                 PreferredBackBufferHeight = 1080
             };
+            
 
             Content.RootDirectory = "Content";
         }
@@ -58,9 +60,13 @@ namespace BoardMap
         /// related content.  Calling base.Initialize will enumerate through any components
         /// and initialize them as well.
         /// </summary>
-        protected override void Initialize() {
+        protected override void Initialize()
+        {
             this.IsMouseVisible = true;
             Mouse.WindowHandle = Window.Handle;
+
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -69,7 +75,8 @@ namespace BoardMap
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
         /// </summary>
-        protected override void LoadContent() {
+        protected override void LoadContent()
+        {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -101,7 +108,8 @@ namespace BoardMap
             // init german economy as test
             germany = landscape.searchCountry("GER");
             // init grain and cotton firm in all states
-            for(int i = 0; i < germany.states.Count; i++) {
+            for (int i = 0; i < germany.states.Count; i++)
+            {
                 // state ref
                 State currentState = germany.states[i];
                 // add grain and cotton firms
@@ -110,21 +118,24 @@ namespace BoardMap
             }
         }
         Country germany;
-        
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime) {
+        protected override void Update(GameTime gameTime)
+        {
             // esc -> exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-            || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+            || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
             }
 
             // mouse click
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed) {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
                 // save clicked tile
                 selectedTile = landscape.searchTile(frame.getColorFrom(Mouse.GetState().X, Mouse.GetState().Y));
                 // draw light state
@@ -134,7 +145,7 @@ namespace BoardMap
             }
 
             // move map
-            frame.shiftMap(GraphicsDevice.PresentationParameters.BackBufferWidth, 
+            frame.shiftMap(GraphicsDevice.PresentationParameters.BackBufferWidth,
                            GraphicsDevice.PresentationParameters.BackBufferHeight);
 
             // keyboard
@@ -146,11 +157,13 @@ namespace BoardMap
             lastMouse = Mouse.GetState();
 
             // run economy every half second
-            if(timer > TimeSpan.Zero) {
+            if (timer > TimeSpan.Zero)
+            {
                 // pass time from last update
                 timer -= gameTime.ElapsedGameTime;
                 // check if timer ran out
-                if(timer <= TimeSpan.Zero) {
+                if (timer <= TimeSpan.Zero)
+                {
                     // run economy
                     germany.runEconomy();
                     // set timer to t - half second
@@ -158,7 +171,7 @@ namespace BoardMap
                 }
 
             }
-                        
+
             base.Update(gameTime);
         }
         TimeSpan timer = new TimeSpan(0, 0, 3);
@@ -167,7 +180,8 @@ namespace BoardMap
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime) {
+        protected override void Draw(GameTime gameTime)
+        {
 
             GraphicsDevice.Clear(landscape.waterColor);
             // sprite beginn
@@ -184,7 +198,7 @@ namespace BoardMap
             // interface draw
             uinterface.DrawInterface(selectedTile, tileHover);
 
-            
+
             // Right Corner
 
             // draw fpsCounter
@@ -211,7 +225,8 @@ namespace BoardMap
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
         /// </summary>
-        protected override void UnloadContent() {
+        protected override void UnloadContent()
+        {
             base.UnloadContent();
             spriteBatch.Dispose();
         }

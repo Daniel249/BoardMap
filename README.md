@@ -1,5 +1,4 @@
 # BoardMap
 BoardMap for strategy game 
 
-change scanRange to scanFlood but keep toCut 
-so more textures per tile
+[Demonstration video](https://photos.app.goo.gl/u4oEjfFoMCT9tVzcA)

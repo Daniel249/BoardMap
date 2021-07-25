@@ -40,7 +40,7 @@ namespace BoardMap.LandscapeNS
 
         // add state to states
         public void addState(State _state) {
-            population = population + _state.population.Size;
+            population += _state.population.Size;
             states.Add(_state);
         }
 

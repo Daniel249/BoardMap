@@ -61,6 +61,9 @@ namespace BoardMap
             this.IsMouseVisible = true;
             Mouse.WindowHandle = Window.Handle;
 
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
+
             base.Initialize();
         }
 
@@ -167,7 +170,7 @@ namespace BoardMap
             spriteBatch.DrawString(onlyFont, "Tiles: " + landscape.tiles.Count.ToString(), new Vector2(1920 - 100, 45), Color.Black);
 
             // draw currentZoom
-            spriteBatch.DrawString(onlyFont, $"Zoom: {frame.currentZoom.ToString()}", new Vector2(1920 - 100, 75), Color.Black);
+            spriteBatch.DrawString(onlyFont, "Zoom: " + string.Format("{0:0.00}", frame.currentZoom), new Vector2(1920 - 100, 75), Color.Black);
 
 
 

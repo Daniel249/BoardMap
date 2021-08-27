@@ -132,57 +132,45 @@ namespace BoardMap.Graphics
 
             // map bound to screen through 
 
-            // if map bigger than screen and implicit zoom out
+            // if map bigger than screen
             if (zoomSize.Y > height) {
 
-                // if room above
+                // room above not aloud
                 if (Position.Y > 0) {
-                    // and map goes below screen
-                    if (Position.Y + zoomSize.Y > height) {
-                        // remove room above/blank space
-                        Position.Y = 0;
-                    }
+                    // remove room above/blank space
+                    Position.Y = 0;
                 } 
-                // if room below
+                // room below not aloud
                  else if (Position.Y + zoomSize.Y < height) {
-                    // and map goes above screen
-                    if (Position.Y < 0) {
-                        // remove room below
-                        Position.Y = height - zoomSize.Y;
-                    }
+                    // remove room below
+                    Position.Y = height - zoomSize.Y;
                 }
             }
-            // if map smaller than screen and implicit zoom in
+            // if map smaller than screen
              else if (zoomSize.Y < height) { 
 
-                // if map goes above screen
+                // map cant go above screen
                 if (Position.Y < 0) {
-                    // and room below map
-                    if (Position.Y + zoomSize.Y < height) {
-                        // remove going above screen
-                        Position.Y = 0;
-                    }
+                    // remove going above screen
+                    Position.Y = 0;
                 } 
-                // if map goes below screen
+                // map cant go below screen
                 else if (Position.Y + zoomSize.Y > height) {
-                    // and room above map
-                    if (Position.Y > 0) {
-                        // remove going below screen
-                        Position.Y = height - zoomSize.Y;
-                    }
+                    // remove going below screen
+                    Position.Y = height - zoomSize.Y;
                 }
             }
 
             // relocate map modulo mapSize to keep it around the mouse
             // for zooming into mouse
-            // has no effect on printing 
+            // has no effect on printing
             while (Position.X < Mouse.GetState().X) {
                 Position.X += zoomSize.X;
             }
             if (Position.X > Mouse.GetState().X) {
                 Position.X -= zoomSize.X;
             }
-
+            
         }
 
         // zoom control in percentage

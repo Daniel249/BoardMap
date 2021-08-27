@@ -179,8 +179,11 @@ namespace BoardMap.Graphics
         float zoomSensitivity = 10;
         float minZoom = 10;
         float maxZoom = 500;
+        // float accumulator for int calculations each frame
+        float float_x = 0;
+        float float_y = 0;
         public void checkZoom(MouseState lastState) {
-            
+
             // check mouse wheel and + and - in keyboard 
             if (Mouse.GetState().ScrollWheelValue < lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Subtract)) {
                 // zoom out
@@ -196,7 +199,7 @@ namespace BoardMap.Graphics
                 // zoom currently at 10 in - 500 out 
                 targetZoom -= zoomSensitivity * currentZoom / 100;
 
-            } else if(Mouse.GetState().ScrollWheelValue > lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Add)) {
+            } else if (Mouse.GetState().ScrollWheelValue > lastState.ScrollWheelValue || Keyboard.GetState().IsKeyDown(Keys.Add)) {
 
                 // zoom in
                 // check change direction
@@ -217,53 +220,32 @@ namespace BoardMap.Graphics
                 targetZoom = minZoom;
             }
 
-            /*
-            // before applying zoom
-            // estimate location in map relative to map position. apply zoom after
-            float search_x = (float)(Mouse.GetState().X - Position.X) * 100 / currentZoom;
-            float search_y = (float)(Mouse.GetState().Y - Position.Y) * 100 / currentZoom;
-            if (search_x < 0) {
-                search_x = 0;
-            } else if (search_x > mapTexture.Width) {
-                search_x = mapTexture.Width;
-            }
-            if (search_y < 0) {
-                search_y = 0;
-            } else if (search_y > mapTexture.Height) {
-                search_y = mapTexture.Height;
-            } */
 
             // store currentZoom
             float lastZoom = currentZoom;
             // apply zoom towards target
             currentZoom += (targetZoom - currentZoom) / 10;
 
-            // calculate corrections to maintain mouse static 
-            // mouse location is currently calculalted like this in getColorFrom
-            // float search_x = (float)(pos_x - Position.X) * 100 / currentZoom;
-            // float search_y = (float)(pos_y - Position.Y) * 100 / currentZoom;
-            
             int mouseX = Mouse.GetState().X;
             int mouseY = Mouse.GetState().Y;
-            /*
-            // bound Y to map height relative to position. as to not zoom into nothing
-            if (mouseY > Position.Y) {
-                mouseY = Position.Y;
-            } else if (mouseY > Position.Y + mapTexture.Height) {
-                mouseY = Position.Y + mapTexture.Height;
-            } */
-            // do calculations
-            int rel_x = (int)((lastZoom - currentZoom) * (mouseX - Position.X) / lastZoom);
-            int rel_y = (int)((lastZoom - currentZoom) * (mouseY - Position.Y) / lastZoom);
-            // translate position to keep mouse static
+            // calculate offset to keep mouse in place
+            float_x += ( (mouseX - Position.X) * (lastZoom - currentZoom)/lastZoom);
+            float_y += ( (mouseY - Position.Y) * (lastZoom - currentZoom)/lastZoom);
+            // cast to int if bigger than 1
+            int rel_x = (int)float_x;
+            int rel_y = (int)float_y;
+            // apply
             Position.X += rel_x;
             Position.Y += rel_y;
-
+            // accumulate float smaller than 1. cast to int and apply next time if bigger than 1 
+            float_x -= rel_x;
+            float_y -= rel_y;
             
 
             //update zoomSize for next drawing
             zoomSize = new Point((int)(mapTexture.Width * currentZoom / 100), (int)(mapTexture.Height * currentZoom / 100));
         }
+        
 
         // get blank canvas
         public ColorData<Color> getBlankCanvas() {
